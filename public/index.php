@@ -1,7 +1,4 @@
 <?php
-// Hack to allow API to recieve requests from any client (browser preflight checks)
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Authorization, Content-Type' );
 
 /**
  * Laravel - A PHP Framework For Web Artisans
