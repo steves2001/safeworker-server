@@ -25,13 +25,45 @@ class ActivityController extends Controller
     {
         $userid = Auth::id();
         $rowid = 1;
-        /* Enable when basic functionality confirmed
+        
+        // Check for a valid data from the app
+        $validator = Validator::make($request->all(), [
+            'location' => 'required|string',
+            'duration' => 'required|numeric',
+            'escort' => 'required|in:Y,N'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
+        }  
+        
+        $input = $request->all();
+        
+        //  Calc the logged start and end times for DB and Client
+        $startTime = time();
+        
+        $sqlStartTime = date("Y-m-d H:i:s", $startTime);
+        $responseStartTime = date("D, d M Y H:i:s", $startTime);
+
+        $sqlEndTime   = date("Y-m-d H:i:s", $startTime + intval($input['duration'] * 60));
+        $responseEndTime   = date("D, d M Y H:i:s", $startTime + intval($input['duration'] * 60));
+        
+        if(strlen($input['phone']) == 0) {
+            $input['phone'] = 'No Phone';
+        }
+
+        if(strlen($input['message']) == 0) {
+            $input['message'] = 'No Message';
+        }
+
+        
+         /* Enable when basic functionality confirmed 
         $rowid  = DB::table('activities')->insertGetId([
             'created_at' => date("Y-m-d H:i:s"), 
-            'starttime'=> date("Y-m-d H:i:s"),
-            'endtime' => date("Y-m-d H:i:s"),
-            'location' => 'Unknown',
-            'escortrequired' => 'Y', 
+            'starttime'=> $sqlStartTime,
+            'endtime' => $sqlEndTime,
+            'location' => $input['location'],
+            'escortrequired' => $input['escort'], 
             'phone' => '01427613288',
             'message' => 'Hello World', 
             'active' => 'Y', 
@@ -39,26 +71,17 @@ class ActivityController extends Controller
             'userid' => $userid
         ]);
         */
+        
+
+
+        
         $results = [   
             'user'=> $userid,                     
             'activity'=> $rowid,                     
-            'starttime'=> date("Y-m-d H:i:s"),
-            'endtime' => date("Y-m-d H:i:s")
+            'starttime'=> $responseStartTime,
+            'endtime' =>  $responseEndTime
         ];
-        
-        
-        // Check for a valid source id
-        //$validator = Validator::make($request->all(), [
-        //    'source' => 'required|numeric',
-        //]);
 
-        //if ($validator->fails()) {
-        //    return response()->json(['error'=>$validator->errors()], 401);            
-        //}
-
-        // Extract all the announcements for this source (pagination needs to be investigated)
-        //$search = $request->all();
-        
         //$announcements = DB::table('announcements')->where([
         //    ['source', '=', $search['source']],
         //    ['visible', '=', 'Y'],
