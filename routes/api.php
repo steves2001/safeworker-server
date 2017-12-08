@@ -22,10 +22,12 @@ Route::post('register', 'API\UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function(){
 	Route::post('details', 'API\UserController@details');
-    Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements')->middleware('auth:api');
-    Route::put('activity/log', 'API\ActivityController@logActivity');
+    Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
+    Route::post('activity/log', 'API\ActivityController@logActivity');
+    Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
+    Route::get('activity/status', 'API\ActivityController@activityStatus');
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});

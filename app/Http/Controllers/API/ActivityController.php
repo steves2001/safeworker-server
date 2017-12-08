@@ -24,7 +24,7 @@ class ActivityController extends Controller
     public function logActivity(Request $request)
     {
         $userid = Auth::id();
-        $rowid = 1;
+        $rowid = 0;
         
         // Check for a valid data from the app
         $validator = Validator::make($request->all(), [
@@ -55,42 +55,32 @@ class ActivityController extends Controller
         if(strlen($input['message']) == 0) {
             $input['message'] = 'No Message';
         }
-
+        // Clear any existing activities
+        DB::table('activities')
+            ->where('userid', $userid)
+            ->update(['active' => 'N']);
         
-         /* Enable when basic functionality confirmed 
+        // Insert the new activity
         $rowid  = DB::table('activities')->insertGetId([
             'created_at' => date("Y-m-d H:i:s"), 
             'starttime'=> $sqlStartTime,
             'endtime' => $sqlEndTime,
             'location' => $input['location'],
             'escortrequired' => $input['escort'], 
-            'phone' => '01427613288',
-            'message' => 'Hello World', 
+            'phone' => $input['phone'],
+            'message' => $input['message'], 
             'active' => 'Y', 
             'accepted' => 'N', 
             'userid' => $userid
         ]);
-        */
-        
-
-
-        
+              
+        // Record the inserted start and end times       
         $results = [   
             'user'=> $userid,                     
             'activity'=> $rowid,                     
             'starttime'=> $responseStartTime,
             'endtime' =>  $responseEndTime
         ];
-
-        //$announcements = DB::table('announcements')->where([
-        //    ['source', '=', $search['source']],
-        //    ['visible', '=', 'Y'],
-        //])->latest()->get();
-        
-        // Nothing returned send an error (this might be better to just send an empty announcement)
-        //if ($announcements->count() == 0) {
-        //   return response()->json(['error'=>['empty' => ['There are no new announcements for this category.']]], 401);
-        //}
 
         // Send the json annoucements (review paginations later)
         return response()->json(['success'=>$results], $this->successStatus);
@@ -102,10 +92,35 @@ class ActivityController extends Controller
         return response()->json($this->successStatus);
     }
     
+    // Cancel the activity (Student/Security)
+    public function cancelActivity(Request $request)
+    {
+        $userid = Auth::id();
+        
+        DB::table('activities')
+            ->where('userid', $userid)
+            ->update(['active' => 'N']);
+        
+        return response()->json($this->successStatus);
+    }
+    
     // Accepts the activity (Security only)
     public function acceptActivity(Request $request)
     {
         return response()->json($this->successStatus);
+    }
+    
+    // Accepts the activity (Security only)
+    public function activityStatus(Request $request)
+    {
+        $userid = Auth::id();
+        $result = DB::table('activities')
+            ->select('accepted')
+            ->where('userid', $userid)
+            ->where('active', 'Y')
+            ->first();
+        
+        return response()->json(['success'=>$result], $this->successStatus);
     }
 
 }
