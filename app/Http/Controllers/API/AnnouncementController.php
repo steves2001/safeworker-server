@@ -34,7 +34,7 @@ class AnnouncementController extends Controller
         $announcements = DB::table('announcements')->where([
             ['source', '=', $search['source']],
             ['visible', '=', 'Y'],
-        ])->latest()->get();
+        ])->latest()->paginate(5);//->get();
         
         // Nothing returned send an error (this might be better to just send an empty announcement)
         if ($announcements->count() == 0) {
