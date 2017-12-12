@@ -10,7 +10,7 @@ class CreateAnnouncementsTable extends Migration {
 		Schema::create('announcements', function(Blueprint $table) {
 			$table->increments('id');
 			$table->timestamps();
-			$table->integer('source')->default('1');
+			$table->integer('source')->unsigned()->default('1');
 			$table->string('title', 255)->default('Notification');
 			$table->text('content');
 			$table->char('visible', 1)->default('Y');
