@@ -22,6 +22,8 @@ Route::post('register', 'API\UserController@register');
 
 Route::group(['middleware' => 'auth:api'], function(){
 	Route::post('details', 'API\UserController@details');
+    //Sample role entry for system
+    //Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements')->middleware(['role:Admin+Security+HE']);
     Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
     Route::post('activity/log', 'API\ActivityController@logActivity');
     Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
