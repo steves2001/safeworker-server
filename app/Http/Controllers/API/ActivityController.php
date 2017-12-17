@@ -92,7 +92,7 @@ class ActivityController extends Controller
         return response()->json($this->successStatus);
     }
     
-    // Cancel the activity (Student/Security)
+    // Cancel the activity (Student)
     public function cancelActivity(Request $request)
     {
         $userid = Auth::id();
@@ -103,6 +103,70 @@ class ActivityController extends Controller
         
         return response()->json($this->successStatus);
     }
+    
+    public function retrieveActivities(Request $request, $action = 'all')
+    {
+        // Check for a valid data from the app
+        $validator = Validator::make($request->all(), [
+            'filter' => 'required|numeric'
+        ]);
+        
+        if (($action == 'item' || $action == 'user') && $validator->fails()) {
+            return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
+        }
+          
+        $input = $request->all();
+        
+        //Switch to decide if $action is all, active, inactive, user or item.
+        
+        switch ($action) {
+            case "active":
+                $result = DB::table('activities')
+                            ->join('users', 'activities.userid', '=', 'users.id')
+                            ->where('active', 'Y')
+                            ->select('activities.*', 'users.name')  
+                            ->latest()
+                            ->get();
+                break;
+            case "inactive":
+                $result = DB::table('activities')
+                            ->join('users', 'activities.userid', '=', 'users.id')
+                            ->where('active', 'N')
+                            ->select('activities.*', 'users.name')  
+                            ->latest()
+                            ->get();
+                break;
+            case "all":
+                $result = DB::table('activities')
+                            ->join('users', 'activities.userid', '=', 'users.id')
+                            ->select('activities.*', 'users.name')  
+                            ->latest()
+                            ->get();
+                break;
+            case "item":              
+                $result = DB::table('activities')
+                            ->join('users', 'activities.userid', '=', 'users.id')
+                            ->where('id', $input['filter'])
+                            ->select('activities.*', 'users.name')  
+                            ->latest()
+                            ->get();
+                break;
+            case "user":              
+                $result = DB::table('activities')
+                            ->join('users', 'activities.userid', '=', 'users.id')
+                            ->where('activities.userid', $input['filter'])
+                            ->select('activities.*', 'users.name')  
+                            ->latest()
+                            ->get();
+                break;
+            default:
+                return response()->json(['error'=>['empty' => ['Incorrect api action use: active, inactive or all']]], 401);
+        }
+        
+        
+        return response()->json(['success'=>$result], $this->successStatus);
+    }
+
     
     // Accepts the activity (Security only)
     public function acceptActivity(Request $request)

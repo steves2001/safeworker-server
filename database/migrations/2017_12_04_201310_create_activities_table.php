@@ -19,7 +19,7 @@ class CreateActivitiesTable extends Migration {
 			$table->char('active', 1)->default('Y');
 			$table->char('accepted', 1)->default('N');
 			$table->integer('userid')->unsigned();
-            //$table->foreign('userid')->references('id')->on('users');
+            
 		});
 	}
 

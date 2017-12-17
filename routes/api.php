@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('activity/log', 'API\ActivityController@logActivity');
     Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
     Route::get('activity/status', 'API\ActivityController@activityStatus');
+    // Security routes
+    Route::get('activity/list/{action?}', 'API\ActivityController@retrieveActivities')->middleware(['role:Admin+Security']);
 });
 
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
