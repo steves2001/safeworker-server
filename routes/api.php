@@ -12,26 +12,23 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//Sample role entry for system
+//Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements')->middleware(['role:Admin+Security+HE']);
 
-
-
-// [SS:20171119] Added the following routes for the API
-
+// Routes not requiring authentication
 Route::post('login', 'API\UserController@login');
 Route::post('register', 'API\UserController@register');
-
+Route::post('password/reset', 'API\PasswordController@resetPassword');
+Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 Route::group(['middleware' => 'auth:api'], function(){
-	Route::post('details', 'API\UserController@details');
-    //Sample role entry for system
-    //Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements')->middleware(['role:Admin+Security+HE']);
+    // Basic logged in user routes
+    Route::post('details', 'API\UserController@details');
     Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
     Route::post('activity/log', 'API\ActivityController@logActivity');
     Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
     Route::get('activity/status', 'API\ActivityController@activityStatus');
-    // Security routes
+    // Security only routes
     Route::get('activity/list/{action?}', 'API\ActivityController@retrieveActivities')->middleware(['role:Admin+Security']);
+    Route::put('activity/accept', 'API\ActivityController@acceptActivity')->middleware(['role:Admin+Security']);
+    Route::put('activity/clear', 'API\ActivityController@clearActivity')->middleware(['role:Admin+Security']);
 });
-
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});

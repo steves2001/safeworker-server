@@ -171,15 +171,53 @@ class ActivityController extends Controller
     // Accepts the activity (Security only)
     public function acceptActivity(Request $request)
     {
-        return response()->json($this->successStatus);
+        // Check for a valid data from the app
+        $validator = Validator::make($request->all(), [
+            'filter' => 'required|numeric'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
+        }
+          
+        $input = $request->all();
+        
+        $numRows = DB::table('activities')
+            ->where('id', $input['filter'])
+            ->where('active', 'Y')
+            ->update(['accepted' => 'Y']);
+ 
+        return response()->json(['rows'=>$numRows, 'filter'=>$input['filter']], $this->successStatus);
     }
     
-    // Accepts the activity (Security only)
+    // Clears the activity (Security only)
+    public function clearActivity(Request $request)
+    {
+        // Check for a valid data from the app
+        $validator = Validator::make($request->all(), [
+            'filter' => 'required|numeric'
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
+        }
+          
+        $input = $request->all();
+        
+        $numRows = DB::table('activities')
+            ->where('id', $input['filter'])
+            ->update(['accepted' => 'N', 'active' => 'N']);
+ 
+        return response()->json(['rows'=>$numRows, 'filter'=>$input['filter']], $this->successStatus);
+    }
+    
+    
+    // Retrieves the first active activity for the logged in (User)
     public function activityStatus(Request $request)
     {
         $userid = Auth::id();
         $result = DB::table('activities')
-            ->select('accepted')
+            ->select('accepted', 'active', 'id', 'endtime')
             ->where('userid', $userid)
             ->where('active', 'Y')
             ->first();
