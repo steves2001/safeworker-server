@@ -1,11 +1,14 @@
 <!doctype html>
-<html>
+<html lang="{{ app()->getLocale() }}">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Reset Password</title>
+        <title>Password Reset Failed</title>
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
         <style>
@@ -52,23 +55,18 @@
 
             .m-b-md {
                 margin-bottom: 30px;
-            }            
+            }
         </style>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
             <div class="content">
                 <div class="title m-b-md">
-                    Reset Your Password
+                    Password Reset Failed
                 </div>
-
                 <div class="links">
-                    <p>Hi {{$userName}}</p>
-                    <p>This is a password reset email from Lincoln College study-safe, your password has been set to <strong>{{$userPassword}}</strong> please click the link below to accept the change and then login from your app.</p>
-                    <a href="{{$apiRoute}}{{$userToken}}">Click this link to confirm your new password you will then be able to login.</a>
-                    <p>Once you have logged in you will be able to set your own password.</p>
-                    <p>Regards</p>
-                    <p>Lincoln College Admin</p>
+                    <p>Passwords can only be reset by following the link from your reset email, if you have not used Study Safe to request a reset, this page will not assist you in reseting your password.</p>
+                    <a href="https://laravel.com/docs">Documentation</a>
                 </div>
             </div>
         </div>
