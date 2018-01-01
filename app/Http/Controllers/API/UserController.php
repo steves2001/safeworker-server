@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Validator;
 
 class UserController extends Controller
@@ -48,7 +49,9 @@ class UserController extends Controller
         }
 
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);  
+        // Changed for consistency with password controller
+        $input['password'] = Hash::make($input['password']);
+        //$input['password'] = bcrypt($input['password']);  
         // Note this needs a duplicate user check
         if (User::where('email', '=', $input['email'])->count() > 0) {
            return response()->json(['error'=>['email' => ['Your email exists on the system reset your password.']]], 401);

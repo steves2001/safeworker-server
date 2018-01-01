@@ -115,5 +115,49 @@ class PasswordController extends Controller
         return view('resetfail');
     }
     
+    /**
+     * Change the given user's password.
+     *
+     * @param  array post request containing the users 
+     *                      password     $oldPassword 
+     *                      new password $newPassword
+     * @return string json success 200/error 422 status
+     */    
+    public function changePassword(Request $request)
+    {
+     // Validate the email submitted
+        $validator = Validator::make($request->all(), [
+            'newPassword' => 'required|string|min:6|max:255',
+            'oldPassword' => 'required|string|max:255',
+        ]);
+     // If validation fails return json error
+        if ($validator->fails()) {
+            return response()->json(['error'=>'A password was missing or less than 6 characters.'], 422);            
+        }
+        
+     // Get logged in user
+        $user = Auth::user();
+        
+        if ($user)
+        {
+         // Get user data from the table
+            $dbUser = DB::table('users')->where('id', $user->id)->first();
+
+            $input = $request->all();
+            $input['newPassword'] = Hash::make($input['newPassword']);
+
+            if(Hash::check($input['oldPassword'], $dbUser->password))
+            {
+              // Insert the new password into the users record
+                 DB::table('users')->where('id', $user->id)->update(['password' => $input['newPassword']]);  
+                
+                return response()->json(['success'=>'Your password has been changed.'], $this->successStatus);
+            }
+            else
+                return response()->json(['error'=>'Your old password does not match the system.'], 422);
+        }
+ 
+        return response()->json(['error'=>'Your password has not been changed.'], 422);
+    }
 
 }

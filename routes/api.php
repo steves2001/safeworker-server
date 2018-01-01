@@ -22,6 +22,7 @@ Route::post('password/reset', 'API\PasswordController@resetPassword');
 Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 Route::group(['middleware' => 'auth:api'], function(){
     // Basic logged in user routes
+    Route::put('password/change', 'API\PasswordController@changePassword');
     Route::post('details', 'API\UserController@details');
     Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
     Route::post('activity/log', 'API\ActivityController@logActivity');
