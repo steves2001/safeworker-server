@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Validator;
 
 class UserController extends Controller
@@ -20,14 +21,33 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function login(){
+     // Check login details
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
             $success['token'] =  $user->createToken('MyApp')->accessToken;
-            return response()->json(['success' => $success], $this->successStatus);
+         // Correct password entered check the user has confirmed the registration or password change
+            if($this->emailConfirmationCompleted($user)){
+                           return response()->json(['success' => $success], $this->successStatus);
+            }
+         // Confirmation link has not been clicked
+            return response()->json(['error'=>'You must click the link in the email sent to you'], 401);
         }
         else{
-            return response()->json(['error'=>'Unauthorised'], 401);
+         // Login details were incorrect
+            return response()->json(['error'=>'Incorrect username or password'], 401);
         }
+    }
+    
+    public function emailConfirmationCompleted($user){
+      // Check if there is a validation email link to be clicked
+         $valid = DB::table('uservalidate')->where('userid', $user->id)->count();
+        
+         if ($valid == 0){
+             return true;
+         }
+         else {
+             return false;
+         }
     }
 
     /**
