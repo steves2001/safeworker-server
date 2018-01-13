@@ -48,7 +48,7 @@ class AnnouncementController extends Controller
 
         // Nothing returned send an error (this might be better to just send an empty announcement)
         if ($announcements->count() == 0) {
-           return response()->json(['error'=>['empty' => ['There are no new announcements for this category.']]], 401);
+           return response()->json(['error' => 'There are no new announcements for this category.'], 204);
         }
 
         // Send the json annoucements (review paginations later)

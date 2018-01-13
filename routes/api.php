@@ -18,6 +18,8 @@ use Illuminate\Http\Request;
 // Routes not requiring authentication
 Route::post('login', 'API\UserController@login');
 Route::post('register', 'API\UserController@register');
+Route::get('register/confirm/{validationToken?}', 'API\UserController@confirmRegistration');
+
 Route::post('password/reset', 'API\PasswordController@resetPassword');
 Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 Route::group(['middleware' => 'auth:api'], function(){
@@ -28,6 +30,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('activity/log', 'API\ActivityController@logActivity');
     Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
     Route::get('activity/status', 'API\ActivityController@activityStatus');
+    // Contact support routes
+    Route::post('contact', 'API\ContactController@messageContact');
     // Security only routes
     Route::get('activity/list/{action?}', 'API\ActivityController@retrieveActivities')->middleware(['role:Admin+Security']);
     Route::put('activity/accept', 'API\ActivityController@acceptActivity')->middleware(['role:Admin+Security']);
