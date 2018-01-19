@@ -26,7 +26,6 @@ Route::group(['middleware' => 'auth:api'], function(){
     // Basic logged in user routes
     Route::put('password/change', 'API\PasswordController@changePassword');
     Route::post('details', 'API\UserController@details');
-    Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
     Route::post('activity/log', 'API\ActivityController@logActivity');
     Route::put('activity/cancel', 'API\ActivityController@cancelActivity');
     Route::get('activity/status', 'API\ActivityController@activityStatus');
@@ -36,4 +35,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('activity/list/{action?}', 'API\ActivityController@retrieveActivities')->middleware(['role:Admin+Security']);
     Route::put('activity/accept', 'API\ActivityController@acceptActivity')->middleware(['role:Admin+Security']);
     Route::put('activity/clear', 'API\ActivityController@clearActivity')->middleware(['role:Admin+Security']);
+    // Announcement related routes
+    Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
+    Route::post('announcement/submit/security', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Security'])->name('security');
 });
