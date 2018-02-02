@@ -37,5 +37,9 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::put('activity/clear', 'API\ActivityController@clearActivity')->middleware(['role:Admin+Security']);
     // Announcement related routes
     Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements');
-    Route::post('announcement/submit/security', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Security'])->name('security');
+    Route::post('announcement/submit/admin', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin'])->name('Admin');
+    Route::post('announcement/submit/security', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Security'])->name('Security');
+    Route::post('announcement/submit/he', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+HE'])->name('HE');
+    Route::post('announcement/submit/general', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+General'])->name('General');
+    Route::post('announcement/submit/library', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Library'])->name('Library');
 });
