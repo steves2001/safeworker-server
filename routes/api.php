@@ -42,4 +42,6 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('announcement/submit/he', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+HE'])->name('HE');
     Route::post('announcement/submit/general', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+General'])->name('General');
     Route::post('announcement/submit/library', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Library'])->name('Library');
+    // Admin CRUD related routes
+    Route::resource('users', 'UserCRUDController')->middleware(['role:Admin']);
 });

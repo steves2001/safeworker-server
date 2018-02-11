@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-table.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
@@ -50,7 +51,7 @@
                                 <ul>
                                     <li><a id="addUser" href="#">Add User</a>
                                     </li>
-                                    <li><a id="manageUser" href="#">Manage User</a>
+                                    <li><a id="manageUsers" href="#">Manage Users</a>
                                     </li>
                                 </ul>
                             </div>
@@ -246,7 +247,19 @@
         <section id="mainPage" class="row">
         </section>
         <!--Main row end -->
-
+        <section id="userAdmin">
+            <table id="userAdminTable" data-pagination="true" data-search="true">
+                <thead>
+                    <tr>
+                        <th data-field="id">Id</th>
+                        <th data-field="name">Name</th>
+                        <th data-field="email">Email</th>
+                        <th data-field="created_at">Created</th>
+                        <th data-field="updates_at">Updated</th>
+                    </tr>
+                </thead>
+            </table>
+        </section>
         <!--End of screen gap start -->
         <div>
             <p>&nbsp;</p>
@@ -263,8 +276,10 @@
     <script type="text/javascript" src="js/popper.min.js"></script>
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-table.js"></script>
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
+    
     <!-- PWA Scripts -->
     <script type="text/javascript" src="js/core_app.js" async></script>
 </body>

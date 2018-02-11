@@ -326,6 +326,17 @@ function setupChangePasswordForm(){
 // ---------------------------------------------------------------------------
 // Set navigation visibility
 
+function setupNavigationMenu(){
+       
+    $("#manageUsers").click(function(e) {
+        ajaxGetAllUsers();
+    }); // End   
+}
+
+// End setup Navigation
+// ---------------------------------------------------------------------------
+// Set navigation visibility
+
 function setNavigationVisibility(visibility = 'off'){
         setDisplay('#changePasswordButton', visibility, 'd-block');
         setDisplay('#logoutButton', visibility, 'd-block');
@@ -339,6 +350,37 @@ function setNavigationVisibility(visibility = 'off'){
 // End set navigation visibility
 // ---------------------------------------------------------------------------
 // End Utility Methods
+// ---------------------------------------------------------------------------
+// Start User Administration Methods
+
+function displayUserTable(userData){
+        $('#userAdminTable').bootstrapTable({
+        data: userData
+    });
+}
+
+function ajaxGetAllUsers(){
+    $.ajax({
+        url: api + 'users',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'GET',
+        data: "",
+        success: function(data) {
+            displayUserTable(data);
+            console.log(data);
+        }, // End of success
+        error: function(data) {
+            toastr["error"](data.responseJSON["error"]);
+        } // End error
+    }); // End ajax    
+}
+
+
+// ---------------------------------------------------------------------------
+// End User Administration Methods
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
@@ -358,6 +400,7 @@ function setNavigationVisibility(visibility = 'off'){
     setupLoginForm();
     setupRegisterForm();
     setupChangePasswordForm();
+    setupNavigationMenu();
     $("#logoutButton").click(function(e) {
         logout();
     }); // End logoutButton.click
