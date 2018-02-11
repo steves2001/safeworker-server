@@ -332,7 +332,6 @@ function setupNavigationMenu(){
         ajaxGetAllUsers();
     }); // End   
 }
-
 // End setup Navigation
 // ---------------------------------------------------------------------------
 // Set navigation visibility
@@ -349,15 +348,33 @@ function setNavigationVisibility(visibility = 'off'){
 }
 // End set navigation visibility
 // ---------------------------------------------------------------------------
+// Display an ajaxt bootstrap table
+
+function displayTable(tableId, userData){
+    $(tableId).bootstrapTable(userData);
+}
+// End Display an ajaxt bootstrap table
+// ---------------------------------------------------------------------------
 // End Utility Methods
 // ---------------------------------------------------------------------------
 // Start User Administration Methods
+// ---------------------------------------------------------------------------
+// Edit and delete actions for the user table
 
-function displayUserTable(userData){
-        $('#userAdminTable').bootstrapTable({
-        data: userData
-    });
+function userTableActions(value, row, index, field) {
+
+    return [
+                '<a class="" href="javascript:void(0)" title="Edit">',
+                '<i class="fa fa-pencil" aria-hidden="true"></i>',
+                '</a> ',
+                '<a class="" href="javascript:void(0)" data-userid="'+row.id+'" data-username="'+row.name+'" data-useremail="'+row.email+'" title="Remove">',
+                '<i class="fa fa-trash" aria-hidden="true"></i>',
+                '</a>'
+            ].join('');
 }
+// End edit and delete actions for the user table
+// ---------------------------------------------------------------------------
+// Get all the users from the server and display as a table
 
 function ajaxGetAllUsers(){
     $.ajax({
@@ -369,16 +386,14 @@ function ajaxGetAllUsers(){
         type: 'GET',
         data: "",
         success: function(data) {
-            displayUserTable(data);
-            console.log(data);
+            displayTable('#userAdminTable', data);
         }, // End of success
         error: function(data) {
             toastr["error"](data.responseJSON["error"]);
         } // End error
     }); // End ajax    
 }
-
-
+// End get all the users from the server and display as a table
 // ---------------------------------------------------------------------------
 // End User Administration Methods
 // ---------------------------------------------------------------------------

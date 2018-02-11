@@ -8,6 +8,15 @@ use App\Http\Resources\UserResource;
 
 class UserCRUDController extends Controller
 {
+    // List of columns in table
+    protected $columns = [
+        ['field'=>'id', 'title'=>'Id', 'align'=>'right'], 
+        ['field'=>'name', 'title'=>'Name'], 
+        ['field'=>'email', 'title'=>'Email'], 
+        ['field'=>'created_at', 'title'=>'Created'], 
+        ['formatter'=>'userTableActions', 'title'=>'Action', 'align'=>'right']
+    ];
+    
     /**
      * Display a listing of the resource.
      *
@@ -15,8 +24,10 @@ class UserCRUDController extends Controller
      */
     public function index()
     {
-        // Resturn a list of all the users on the system.
-        return response()->json(UserResource::collection(User::all()));
+        // Return a list of all the users on the system.
+        $data['columns'] = $this->columns;
+        $data['data'] = UserResource::collection(User::select('id','name','email','created_at')->get());
+        return response()->json($data);
     }
 
     /**
@@ -26,6 +37,8 @@ class UserCRUDController extends Controller
      */
     public function create()
     {
+        
+        
         //
     }
 

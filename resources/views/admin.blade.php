@@ -248,14 +248,9 @@
         </section>
         <!--Main row end -->
         <section id="userAdmin">
-            <table id="userAdminTable" data-pagination="true" data-search="true">
+            <table id="userAdminTable" data-pagination="true" data-search="true" data-id-field="id">
                 <thead>
                     <tr>
-                        <th data-field="id">Id</th>
-                        <th data-field="name">Name</th>
-                        <th data-field="email">Email</th>
-                        <th data-field="created_at">Created</th>
-                        <th data-field="updates_at">Updated</th>
                     </tr>
                 </thead>
             </table>
