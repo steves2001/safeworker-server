@@ -330,6 +330,7 @@ function setupNavigationMenu(){
        
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
+        setTableRefreshButton('#userAdminTable', ajaxGetAllUsers);
     }); // End   
 }
 // End setup Navigation
@@ -348,13 +349,35 @@ function setNavigationVisibility(visibility = 'off'){
 }
 // End set navigation visibility
 // ---------------------------------------------------------------------------
-// Display an ajaxt bootstrap table
+// Display an ajax bootstrap table
 
-function displayTable(tableId, userData){
+function displayTable(tableId, userData, hideColumns = []){
+    $(tableId).bootstrapTable('destroy');    
     $(tableId).bootstrapTable(userData);
+    for (const column of hideColumns)
+        $(tableId).bootstrapTable('hideColumn', column);
 }
-// End Display an ajaxt bootstrap table
+
+function setTableRefreshButton(tableId, functionCallback){
+    $(tableId).off("click", " button[name*='refresh']");
+    $(tableId).on( "click", " button[name*='refresh']", ajaxGetAllUsers);
+}
+// End Display an ajax bootstrap table
 // ---------------------------------------------------------------------------
+function userRowStyle(row, index) {
+   
+    switch(row.status){
+        case 'DELETING':
+            return { classes: 'table-warning' };
+            break;
+        case 'ERROR':
+            return { classes: 'table-danger' };
+            break;
+        default:
+            return {};
+            break;
+    }    
+}
 // End Utility Methods
 // ---------------------------------------------------------------------------
 // Start User Administration Methods
@@ -367,12 +390,46 @@ function userTableActions(value, row, index, field) {
                 '<a class="" href="javascript:void(0)" title="Edit">',
                 '<i class="fa fa-pencil" aria-hidden="true"></i>',
                 '</a> ',
-                '<a class="" href="javascript:void(0)" data-userid="'+row.id+'" data-username="'+row.name+'" data-useremail="'+row.email+'" title="Remove">',
+                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteUser(\'#userAdminTable\', '+row.id+')" title="Remove">',
                 '<i class="fa fa-trash" aria-hidden="true"></i>',
                 '</a>'
             ].join('');
 }
 // End edit and delete actions for the user table
+// ---------------------------------------------------------------------------
+// Delete a user from the system
+function ajaxDeleteUser(tableId, userId){
+    rowData = $('#userAdminTable').bootstrapTable('getRowByUniqueId', userId);
+    if(rowData.status) return;
+    $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: userId, row: { status: 'DELETING' } });
+    $.ajax({
+        url: api + 'users/' + userId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'DELETE',
+        data: "",
+        statusCode: {
+            403: function(data) {
+                toastr["error"]('Delete operation failed, you cannot delete yourself');
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });      
+            },
+            404: function(data) {
+                  toastr["error"]('Delete operation failed, user could not be found');
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            }            
+        },
+        success: function(user, status) {
+            $('#userAdminTable').bootstrapTable('removeByUniqueId', user.id);
+            toastr["success"]('User was deleted from the system'); 
+        }, // End of success
+        error: function(data) {
+            console.log(data.responseJSON["id"]);
+        } // End error
+    }); // End ajax    
+}
+// End delete user from system
 // ---------------------------------------------------------------------------
 // Get all the users from the server and display as a table
 
@@ -386,7 +443,8 @@ function ajaxGetAllUsers(){
         type: 'GET',
         data: "",
         success: function(data) {
-            displayTable('#userAdminTable', data);
+            displayTable('#userAdminTable', data, ['status', 'created_at']);
+            
         }, // End of success
         error: function(data) {
             toastr["error"](data.responseJSON["error"]);

@@ -5,6 +5,39 @@
 .invisible {
   visibility: hidden;
 }
+
+.userAdminCheckBox input[type=checkbox] {
+    position: relative !important;
+    left: 0px !important;
+    visibility: visible !important;
+}
+
+.search>input[type=text],input[type=text]:disabled, 
+.search>input[type=text][readonly="readonly"], 
+.search>input[type=text]:focus:not([readonly]),
+.search>input[type=text].valid, 
+.search>input[type=text]:focus.valid {
+    border: 1px solid #000000  !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    margin-right: 5px !important;
+    border-radius: 5px !important;
+    outline: 0 !important;
+    height: 0.65rem !important;
+    width: 95%;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.15);
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.15);
+}
+
+
+.user-table-wrapper {
+    display: block;
+    max-height: 300px;
+    overflow-y: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+
 /* Announcement Styles */
 
 .announcement-col-pad { padding: 15px 15px 0 15px;}

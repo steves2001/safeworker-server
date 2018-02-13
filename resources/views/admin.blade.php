@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-table.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
-    <!-- Your custom styles (optional) -->
+    <link href="css/bootstrap-table.css" rel="stylesheet">
+    <!-- Custom styles -->
     <link href="css/style.css" rel="stylesheet">
 
 </head>
@@ -39,9 +39,9 @@
                          <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-chevron-right"></i>Announcement Management<i class="fa fa-angle-down rotate-icon"></i></a>
                             <div class="collapsible-body">
                                 <ul>
-                                    <li><a id="addAnnouncement" href="#">Add Announcement</a>
-                                    </li>
                                     <li><a id="manageAnnouncements" href="#">Manage Announcements</a>
+                                    </li>
+                                    <li><a id="addAnnouncement" href="#">Add Announcement</a>
                                     </li>
                                 </ul>
                             </div>
@@ -49,19 +49,20 @@
                         <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-chevron-right"></i>User Management<i class="fa fa-angle-down rotate-icon"></i></a>
                             <div class="collapsible-body">
                                 <ul>
+                                    <li><a id="manageUsers" href="#">Manage Users</a>
+                                    </li>                                    
                                     <li><a id="addUser" href="#">Add User</a>
                                     </li>
-                                    <li><a id="manageUsers" href="#">Manage Users</a>
-                                    </li>
+
                                 </ul>
                             </div>
                         </li>
                         <li><a class="collapsible-header waves-effect arrow-r"><i class="fa fa-chevron-right"></i>Log Management<i class="fa fa-angle-down rotate-icon"></i></a>
                             <div class="collapsible-body">
                                 <ul>
-                                    <li><a id="reviewLogs" href="#">Review Logs</a>
+                                    <li><a id="manageLogs" href="#">Manage Logs</a>
                                     </li>
-                                    <li><a id="manageLogs" href="#">manage Logs</a>
+                                    <li><a id="reviewLogs" href="#">Review Logs</a>
                                     </li>
                                 </ul>
                             </div>
@@ -247,13 +248,35 @@
         <section id="mainPage" class="row">
         </section>
         <!--Main row end -->
-        <section id="userAdmin">
-            <table id="userAdminTable" data-pagination="true" data-search="true" data-id-field="id">
-                <thead>
-                    <tr>
-                    </tr>
-                </thead>
+        <section id="userAdmin" class="userAdminCheckBox">
+            <div id="userAdminToolbar" class="userAdminText">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-star fa-sm pr-2" aria-hidden="true"></i>Export</button>
+                    <button type="button" class="btn btn-sm btn-red btn-rounded"><i class="fa fa-heart fa-sm pr-2" aria-hidden="true"></i>Delete</button>
+                    <button type="button" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-user fa-sm pr-2" aria-hidden="true"></i>Refresh</button>
+                </div>
+            </div>
+                         
+            <table id="userAdminTable"
+                   data-toolbar="#userAdminToolbar"                   
+                   data-icons-prefix = "fa"
+                   data-icons = "icons"
+                   data-icon-size = "sm"
+                   data-buttons-class = "purple btn-rounded waves-effect waves-light"
+                   data-row-style="userRowStyle" 
+                   data-striped="true" 
+                   data-classes="table-sm table-no-bordered" 
+                   data-search="true"
+                   data-show-columns="true"           
+                   data-pagination="true" 
+                    
+                   checkbox = "true"
+                   data-unique-id="id"
+                   data-buttons-align="right"
+                   >
+                <thead class="mdb-color lighten-4"><tr></tr></thead>
             </table>
+            
         </section>
         <!--End of screen gap start -->
         <div>
@@ -277,6 +300,17 @@
     
     <!-- PWA Scripts -->
     <script type="text/javascript" src="js/core_app.js" async></script>
+    <script>
+    window.icons = {
+        paginationSwitchDown: 'fa-chevron-down',
+        paginationSwitchUp: 'fa-chevron-up',
+        refresh: 'fa-refresh',
+        toggle: 'fa-toggle-on',
+        columns: 'fa-th-list',
+        detailOpen: 'fa-plus',
+        detailClose: 'fa-minus'
+    };
+    </script>
 </body>
 
 </html>

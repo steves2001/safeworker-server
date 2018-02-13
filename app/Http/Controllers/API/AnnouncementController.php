@@ -14,6 +14,7 @@ class AnnouncementController extends Controller
 
     public $successStatus = 200;
     public $errorStatus = 400;
+    
 
     /**
      * 
