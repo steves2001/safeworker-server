@@ -248,15 +248,16 @@
         <section id="mainPage" class="row">
         </section>
         <!--Main row end -->
-        <section id="userAdmin" class="userAdminCheckBox">
-            <div id="userAdminToolbar" class="userAdminText">
+        <section id="userAdminSection" class="userAdminCheckBox card d-none">
+            <div id="userAdminToolbar" class="userAdminText header">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-star fa-sm pr-2" aria-hidden="true"></i>Export</button>
-                    <button type="button" class="btn btn-sm btn-red btn-rounded"><i class="fa fa-heart fa-sm pr-2" aria-hidden="true"></i>Delete</button>
-                    <button type="button" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-user fa-sm pr-2" aria-hidden="true"></i>Refresh</button>
+                    <button type="button" name="export" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-star fa-sm pr-2" aria-hidden="true"></i>Export</button>
+                    <button type="button" name="delete" class="btn btn-sm btn-red btn-rounded"><i class="fa fa-heart fa-sm pr-2" aria-hidden="true"></i>Delete</button>
+                    <button type="button" name="refresh" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-user fa-sm pr-2" aria-hidden="true"></i>Refresh</button>
                 </div>
             </div>
-                         
+            <div class="card-body">
+                
             <table id="userAdminTable"
                    data-toolbar="#userAdminToolbar"                   
                    data-icons-prefix = "fa"
@@ -276,7 +277,8 @@
                    >
                 <thead class="mdb-color lighten-4"><tr></tr></thead>
             </table>
-            
+                
+            </div>                         
         </section>
         <!--End of screen gap start -->
         <div>

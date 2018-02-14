@@ -19,6 +19,7 @@
 // Global Data
 // ---------------------------------------------------------------------------
     var app = {
+        sectionList: [],
         daysOfWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
         studyEndTime: 0,
         studyTimer: 0,
@@ -66,7 +67,7 @@ function ajaxLogin(e, loginFormName) {
             console.log("Login Response Data");
             console.log(data);
             writeAPIToken(data.success.token);
-            displayForm('none');
+            displaySingleSection('none');
             //setDisplay('#loginSection', 'off', 'd-block');
             setNavigationVisibility('on');
         }, // End of success
@@ -90,7 +91,7 @@ function ajaxRegister(e, registerFormName) {
         data: formData,
         success: function(data) {
             //setDisplay('#registerSection', 'off', 'd-block');
-            displayForm('loginSection');
+            displaySingleSection('loginSection');
             toastr["success"](data.success);
         }, // End of success
         error: function(data) {
@@ -119,7 +120,7 @@ function ajaxRegister(e, registerFormName) {
 
 function logout(e) {
     clearAPIToken();
-    displayForm('loginSection');
+    displaySingleSection('loginSection');
     setNavigationVisibility('off');
     $('#mainPage').empty();
 }
@@ -173,6 +174,18 @@ function setDisplay(item, status, style) {
     }
 }
 // end of set display
+// Section methods
+function displaySingleSection(sectionId = ''){
+    for (var section of app.sectionList){
+        if(sectionId == section){
+            setDisplay('#' + section, 'on', 'd-block');
+        }
+        else{
+            setDisplay('#' + section, 'off', 'd-block');            
+        }
+    }
+}
+// End section methods
 // ---------------------------------------------------------------------------
 // Check user is logged in returns true if user is logged in
 
@@ -262,10 +275,10 @@ function createTimeString(milliseconds) {
 }
 // end create time string
 // ---------------------------------------------------------------------------
-// Only display one form at once
-
+// Only display one form at once (Removed for new function)
+/*
 function displayForm(sectionId = 'none'){
-    $('#navbarToggleExternalContent').collapse('hide');
+    //$('#navbarToggleExternalContent').collapse('hide');
     $( "section" ).each(function() {
       forms = $(this).find("form")
       id = this.id;
@@ -279,6 +292,7 @@ function displayForm(sectionId = 'none'){
       }
     });    
 }
+*/
 // ---------------------------------------------------------------------------
 // Register form setup
 
@@ -288,7 +302,7 @@ function setupRegisterForm(){
         ajaxRegister(e, "#registerForm");
     }); // End registerForm.submit
     $("#cancelButton").click(function(e) {
-        displayForm('loginSection');
+        displaySingleSection('loginSection');
     }); // End cancelButon.click      
 }
 // End register form setup
@@ -304,7 +318,7 @@ function setupLoginForm(){
         forgotPassword($('#lEmail').val());
     }); // End recoverButton.click    
     $("#registerButton").click(function(e) {
-        displayForm('registerSection');
+        displaySingleSection('registerSection');
     }); // End registerButon.click
 }
 // End login form setup
@@ -316,7 +330,7 @@ function setupChangePasswordForm(){
         ajaxChangePassword(e, "#changePasswordForm");
     }); // End changePasswordForm.submit        
     $("#changePasswordButton").click(function(e) {
-        displayForm('changePasswordSection');
+        displaySingleSection('changePasswordSection');
     }); // End changePasswordButton.click
     $("#cancelPasswordChangeButton").click(function(e) {
         setDisplay('#changePasswordSection', 'off', 'd-block');
@@ -330,7 +344,9 @@ function setupNavigationMenu(){
        
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
-        setTableRefreshButton('#userAdminTable', ajaxGetAllUsers);
+        setTableButton('#userAdminToolbar', 'refresh', ajaxGetAllUsers);
+        setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
+        
     }); // End   
 }
 // End setup Navigation
@@ -358,9 +374,9 @@ function displayTable(tableId, userData, hideColumns = []){
         $(tableId).bootstrapTable('hideColumn', column);
 }
 
-function setTableRefreshButton(tableId, functionCallback){
-    $(tableId).off("click", " button[name*='refresh']");
-    $(tableId).on( "click", " button[name*='refresh']", ajaxGetAllUsers);
+function setTableButton(tableId, name, functionCallback){
+    $(tableId).off("click", " button[name*='"+name+"']");
+    $(tableId).on( "click", " button[name*='"+name+"']", function(e){functionCallback();});
 }
 // End Display an ajax bootstrap table
 // ---------------------------------------------------------------------------
@@ -397,6 +413,43 @@ function userTableActions(value, row, index, field) {
 }
 // End edit and delete actions for the user table
 // ---------------------------------------------------------------------------
+// Update user
+function ajaxUpdateUser(userData){
+    rowData = $('#userAdminTable').bootstrapTable('getRowByUniqueId', userId);
+    if(rowData.status) return;
+    $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: userId, row: { status: 'DELETING' } });
+    $.ajax({
+        url: api + 'users/' + userData.id,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'PATCH',
+        data: userData,
+        statusCode: {
+            400: function(data) {
+                toastr["error"]('Update operation failed, sent data missing either email or name');
+            },
+            404: function(data) {
+                toastr["error"]('Update operation failed, user could not be found');
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            },
+            409: function(data) {
+                toastr["error"]('Update operation failed, there was a server conflict during update');
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            }            
+        },
+        success: function(user, status) {
+            // Update table row here!!!!!!!!
+            toastr["success"]('User was updated on the the system'); 
+        }, // End of success
+        error: function(data) {
+            console.log(data.responseJSON["id"]);
+        } // End error
+    }); // End ajax    
+}
+// End update user
+// ---------------------------------------------------------------------------
 // Delete a user from the system
 function ajaxDeleteUser(tableId, userId){
     rowData = $('#userAdminTable').bootstrapTable('getRowByUniqueId', userId);
@@ -431,6 +484,15 @@ function ajaxDeleteUser(tableId, userId){
 }
 // End delete user from system
 // ---------------------------------------------------------------------------
+// Delete multiple users from the system
+function ajaxDeleteMultipleUsers(){
+    for (const user of $('#userAdminTable').bootstrapTable('getSelections')){
+        ajaxDeleteUser('#userAdminTable', user.id);
+    }
+    $('#userAdminTable').bootstrapTable('uncheckAll');
+}
+// End delete multiple users from the system
+// ---------------------------------------------------------------------------
 // Get all the users from the server and display as a table
 
 function ajaxGetAllUsers(){
@@ -444,7 +506,7 @@ function ajaxGetAllUsers(){
         data: "",
         success: function(data) {
             displayTable('#userAdminTable', data, ['status', 'created_at']);
-            
+            displaySingleSection('userAdminSection');            
         }, // End of success
         error: function(data) {
             toastr["error"](data.responseJSON["error"]);
@@ -454,10 +516,12 @@ function ajaxGetAllUsers(){
 // End get all the users from the server and display as a table
 // ---------------------------------------------------------------------------
 // End User Administration Methods
+
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
     setToasterDefaults();
+    $("section[id$='Section']").each(function(){app.sectionList.push($(this).attr('id'));});
     // SideNav Options
     $('.button-collapse').sideNav({
         edge: 'left', // Choose the horizontal origin
@@ -467,7 +531,7 @@ function ajaxGetAllUsers(){
     if(loggedIn()) {
         setNavigationVisibility('on');
     } else {
-        displayForm('loginSection');
+        displaySingleSection('loginSection');
         $('#lEmail').focus();
     }
     setupLoginForm();
@@ -480,6 +544,7 @@ function ajaxGetAllUsers(){
     $("#logoutIcon").click(function(e) {
         logout();
     }); // End logoutButton.click
+    
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Validator;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserCRUDController extends Controller
 {
@@ -25,7 +27,8 @@ class UserCRUDController extends Controller
     public $errorStatus = 400;
     public $errorForbidden = 403;
     public $errorNotFound = 404;
-    
+    public $errorConflict = 409;
+    public $errorUnauthorised = 401;
     /**
      * Display a listing of the resource.
      *
@@ -91,9 +94,42 @@ class UserCRUDController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update($userId, Request $request)
     {
-        //
+        // Check record existence
+        try
+        {
+            $user = User::findOrFail($userId);
+        }
+        catch(ModelNotFoundException $e)
+        {
+             return response()->json(['id'=>$userId], $this->errorNotFound);
+        }
+        
+        // Check valid data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], $this->errorStatus);            
+        }
+        
+        // Update the record
+        try
+        {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
+        }
+        catch(\Exception $e)
+        {
+             return response()->json(['id'=>$userId], $this->errorConflict);
+        }
+        
+        // Return a success
+        return response()->json(['id'=>$userId], $this->successStatus);
     }
 
     /**
@@ -107,7 +143,8 @@ class UserCRUDController extends Controller
         // You are forbidden 403 from deleing yourself
         $user = Auth::user();
         if($user->id == $userId) return response()->json(['id'=>$userId], $this->errorForbidden); 
-        
+        return response()->json(['id'=>$userId], $this->errorNotFound);
+        //return response()->json(['id'=>$userId], $this->successStatus);
         // Delete the user
         $result = User::where('id',$userId)->delete();
         
