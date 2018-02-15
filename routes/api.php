@@ -23,9 +23,6 @@ Route::get('register/confirm/{validationToken?}', 'API\UserController@confirmReg
 Route::post('password/reset', 'API\PasswordController@resetPassword');
 Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 
-Route::get('userroles/users/{id}', 'UserRoleCRUDController@indexByUser');
-Route::post('userroles', 'UserRoleCRUDController@store');
-Route::delete('userroles/{id}', 'UserRoleCRUDController@destroy');
 
 Route::group(['middleware' => 'auth:api'], function(){
     // Basic logged in user routes
@@ -48,5 +45,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('announcement/submit/general', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+General'])->name('General');
     Route::post('announcement/submit/library', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Library'])->name('Library');
     // Admin CRUD related routes
+    // User CRUD
     Route::resource('users', 'UserCRUDController')->middleware(['role:Admin']);
+    // User Permisssion CRUD
+    Route::get('userroles/users/{id}', 'UserRoleCRUDController@indexByUser');
+    Route::post('userroles', 'UserRoleCRUDController@store');
+    Route::delete('userroles/{id}', 'UserRoleCRUDController@destroy');
 });
