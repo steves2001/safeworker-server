@@ -261,8 +261,8 @@
                             </div>                            
                             @foreach ($roles as $role)
                             <div class="ml-5 mb-1">
-                                <input id="check{{ $role->role }}" type="checkbox" class="filled-in" onclick="ajaxChangeRole({{ $role->id }}, this);">
-                                <label for="check{{ $role->role }}">{{ $role->role }}</label>
+                                <input id="checkRole{{ $role->id }}" type="checkbox" class="filled-in" onclick="ajaxChangeRole({{ $role->id }}, this);">
+                                <label for="checkRole{{ $role->id }}">{{ $role->role }}</label>
                            </div>
                             @endforeach
                            <div class="text-center mt-2 mb-2">

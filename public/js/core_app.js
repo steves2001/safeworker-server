@@ -405,6 +405,7 @@ function userTableActions(value, row, index, field) {
 function updateRoleModal(userId, name){
      $("#roleUserId").val( userId );
      $("#roleUserName").text( name );
+     $('#userRoleUpdateModal :checkbox').prop('checked', false);
      $.ajax({
         url: api + 'userroles/users/' + userId,
         headers: {
@@ -414,8 +415,9 @@ function updateRoleModal(userId, name){
         type: 'GET',
         data: "",
         success: function(roles) {
+            console.log(roles);
             for (const role of roles)
-                alert(role.roleid);
+                $('#checkRole'+role.roleid).prop('checked', true);
         }, // End of success
         error: function(data) {
             console.log(data);
