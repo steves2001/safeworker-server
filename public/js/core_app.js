@@ -275,25 +275,6 @@ function createTimeString(milliseconds) {
 }
 // end create time string
 // ---------------------------------------------------------------------------
-// Only display one form at once (Removed for new function)
-/*
-function displayForm(sectionId = 'none'){
-    //$('#navbarToggleExternalContent').collapse('hide');
-    $( "section" ).each(function() {
-      forms = $(this).find("form")
-      id = this.id;
-      if (forms.length > 0) {
-          if(sectionId != 'none' && id == sectionId){
-              setDisplay('#' + sectionId, 'on', 'd-block');              
-          }
-          else{
-              setDisplay('#' + id, 'off', 'd-block');             
-          }
-      }
-    });    
-}
-*/
-// ---------------------------------------------------------------------------
 // Register form setup
 
 function setupRegisterForm(){
@@ -386,6 +367,9 @@ function userRowStyle(row, index) {
         case 'DELETING':
             return { classes: 'table-warning' };
             break;
+        case 'UPDATING':
+            return { classes: 'table-warning' };
+            break;
         case 'ERROR':
             return { classes: 'table-danger' };
             break;
@@ -403,9 +387,12 @@ function userRowStyle(row, index) {
 function userTableActions(value, row, index, field) {
 
     return [
-                '<a class="" href="javascript:void(0)" title="Edit">',
+                '<a class="" href="javascript:void(0)" onclick="updateRoleModal('+row.id+', \''+row.name+'\')" title="Edit Role" data-toggle="modal" data-target="#userRoleUpdateModal"> ',
+                '<i class="fa fa-cogs" aria-hidden="true"></i>',
+                '</a> &nbsp; ',
+                '<a class="" href="javascript:void(0)" onclick="updateUserModal('+row.id+', \''+row.name+'\', \''+row.email+'\')" title="Edit" data-toggle="modal" data-target="#userUpdateModal"> ',
                 '<i class="fa fa-pencil" aria-hidden="true"></i>',
-                '</a> ',
+                '</a> &nbsp; ',
                 '<a class="" href="javascript:void(0)" onclick="ajaxDeleteUser(\'#userAdminTable\', '+row.id+')" title="Remove">',
                 '<i class="fa fa-trash" aria-hidden="true"></i>',
                 '</a>'
@@ -413,13 +400,87 @@ function userTableActions(value, row, index, field) {
 }
 // End edit and delete actions for the user table
 // ---------------------------------------------------------------------------
-// Update user
-function ajaxUpdateUser(userData){
+// Update user role modal with data from the table row
+
+function updateRoleModal(userId, name){
+     $("#roleUserId").val( userId );
+     $("#roleUserName").text( name );
+     $.ajax({
+        url: api + 'userroles/users/' + userId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'GET',
+        data: "",
+        success: function(roles) {
+            for (const role of roles)
+                alert(role.roleid);
+        }, // End of success
+        error: function(data) {
+            console.log(data);
+        } // End error
+    }); // End ajax    
+}     
+
+
+function ajaxChangeRole(roleId, object){
+    userId = $("#roleUserId").val();
+    
+    if($(object).is(':checked')){
+        ajaxCRUD = "POST";
+    } else {
+        ajaxCRUD = "DELETE";
+    }
+    alert(ajaxCRUD);
+    // Do the ajax then set checkbox status
+}
+
+// End update user role modal
+// ---------------------------------------------------------------------------
+// Setup modal to submit data via ajax
+function setupUserModalForm(){
+    $("#userUpdateForm").submit(function(e) {
+        cancelDefaultBehaviour(e);
+        ajaxUpdateUser($("#updateId").val(), $("#userUpdateForm").serialize());
+    }); // End changePasswordForm.submit     
+}
+// End modal setup
+// ---------------------------------------------------------------------------
+// Update user modal with data from the table row
+
+function updateUserModal(id, name, email){
+     $("#updateId").val( id );
+     $("#updateName").val( name );
+     $("#updateEmail").val( email );
+}
+// End update user modal
+// ---------------------------------------------------------------------------
+// Update user table row from user modal
+
+function updateUserRowFromModal(){
+    $('#userAdminTable').bootstrapTable('updateByUniqueId', {
+                id: $("#updateId").val(),
+                row: {
+                    name: $("#updateName").val(),
+                    email: $("#updateEmail").val(),
+                    status: null
+                }
+            });
+
+    
+}
+// End update user table row from user modal
+// ---------------------------------------------------------------------------
+// Update user using ajax
+
+function ajaxUpdateUser(userId, userData){
     rowData = $('#userAdminTable').bootstrapTable('getRowByUniqueId', userId);
     if(rowData.status) return;
-    $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: userId, row: { status: 'DELETING' } });
+    console.log(userData);
+    $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: userId, row: { status: 'UPDATING' } });
     $.ajax({
-        url: api + 'users/' + userData.id,
+        url: api + 'users/' + userId,
         headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer ' + getAPIToken()
@@ -429,6 +490,7 @@ function ajaxUpdateUser(userData){
         statusCode: {
             400: function(data) {
                 toastr["error"]('Update operation failed, sent data missing either email or name');
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
             },
             404: function(data) {
                 toastr["error"]('Update operation failed, user could not be found');
@@ -436,21 +498,23 @@ function ajaxUpdateUser(userData){
             },
             409: function(data) {
                 toastr["error"]('Update operation failed, there was a server conflict during update');
-                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+                $('#userAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
             }            
         },
         success: function(user, status) {
-            // Update table row here!!!!!!!!
+            updateUserRowFromModal();
+            $('#userUpdateModal').modal('hide');
             toastr["success"]('User was updated on the the system'); 
         }, // End of success
         error: function(data) {
-            console.log(data.responseJSON["id"]);
+            console.log(data);
         } // End error
     }); // End ajax    
 }
 // End update user
 // ---------------------------------------------------------------------------
 // Delete a user from the system
+
 function ajaxDeleteUser(tableId, userId){
     rowData = $('#userAdminTable').bootstrapTable('getRowByUniqueId', userId);
     if(rowData.status) return;
@@ -544,7 +608,7 @@ function ajaxGetAllUsers(){
     $("#logoutIcon").click(function(e) {
         logout();
     }); // End logoutButton.click
-    
+    setupUserModalForm();
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

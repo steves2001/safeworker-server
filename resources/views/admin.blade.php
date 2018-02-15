@@ -241,9 +241,79 @@
 
         </section>
         <!-- End Login Form with header -->
-        <!-- Start user admin card -->
         
-        <!-- End user admin card -->
+        <!-- Start user admin modals -->
+        <section id="userRoleUpdateModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document">
+                <div class="modal-content">
+                <!--Header-->
+                    <div class="modal-header">
+                        <p class="heading lead">Update User Roles <span id="roleUserName"></span></p>
+                    </div>
+                <!--End Header-->
+                <!--Body-->
+                    <div class="modal-body mx-4 mt-2">
+                        <form action="#" method="POST" id="userRoleUpdateForm" novalidate>
+                            <div class="md-form d-none">
+                                <i class="fa fa-user prefix grey-text"></i>
+                                <input id="roleUserId" type="text" title="Please enter your id" required value="" name="id" class="form-control">
+                                    
+                            </div>                            
+                            @foreach ($roles as $role)
+                            <div class="ml-5 mb-1">
+                                <input id="check{{ $role->role }}" type="checkbox" class="filled-in" onclick="ajaxChangeRole({{ $role->id }}, this);">
+                                <label for="check{{ $role->role }}">{{ $role->role }}</label>
+                           </div>
+                            @endforeach
+                           <div class="text-center mt-2 mb-2">
+                                <button type="submit" class="btn btn-primary-modal">Update</button>
+                                <button type="button" class="btn btn-outline-secondary-modal waves-effect" data-dismiss="modal">Cancel</button>
+                           </div>
+                        </form>
+                    </div>
+                <!--End Body-->
+                </div>
+            </div>
+        </section>
+        
+        <section id="userUpdateModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document">
+                    <div class="modal-content">
+                        <!--Header-->
+                        <div class="modal-header">
+                                <p class="heading lead">Update User</p>
+                        </div>
+                        <!--End Header-->
+                        <!--Body-->
+                        <div class="modal-body mx-4 mt-4">
+                            <form action="#" method="POST" id="userUpdateForm" novalidate>
+                                <div class="md-form d-none">
+                                    <i class="fa fa-user prefix grey-text"></i>
+                                    <input id="updateId" type="text" title="Please enter your id" required value="" name="id" class="form-control">
+                                    
+                                </div>
+                                <div class="md-form">
+                                    <i class="fa fa-user prefix grey-text"></i>
+                                    <input id="updateName" type="text" title="Please enter your name" required value="" name="name" class="form-control">
+                                   
+                                </div>
+                                <div class="md-form">
+                                    <i class="fa fa-envelope prefix grey-text"></i>
+                                    <input id="updateEmail" type="text" title="Please enter your email" required value="" name="email" class="form-control">
+                                    
+                                </div>
+                                <div class="text-center mb-4">
+                                    <button type="submit" class="btn btn-primary-modal">Update</button>
+                                    <button type="button" class="btn btn-outline-secondary-modal waves-effect" data-dismiss="modal">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--End Body-->
+                    </div>
+            </div>
+        </section>
+        <!-- End user admin modals -->
+
         <!--Main row start -->
         <section id="mainPage" class="row">
         </section>
@@ -257,7 +327,6 @@
                 </div>
             </div>
             <div class="card-body">
-                
             <table id="userAdminTable"
                    data-toolbar="#userAdminToolbar"                   
                    data-icons-prefix = "fa"
@@ -270,14 +339,11 @@
                    data-search="true"
                    data-show-columns="true"           
                    data-pagination="true" 
-                    
                    checkbox = "true"
                    data-unique-id="id"
-                   data-buttons-align="right"
-                   >
+                   data-buttons-align="right">
                 <thead class="mdb-color lighten-4"><tr></tr></thead>
             </table>
-                
             </div>                         
         </section>
         <!--End of screen gap start -->

@@ -18,7 +18,7 @@ class UserCRUDController extends Controller
         ['field'=>'name', 'title'=>'Name'], 
         ['field'=>'email', 'title'=>'Email'], 
         ['field'=>'created_at', 'title'=>'Created'], 
-        ['formatter'=>'userTableActions', 'title'=>'Action', 'align'=>'right'],
+        ['formatter'=>'userTableActions', 'title'=>'Action', 'align'=>'center'],
         ['field'=>'status', 'title'=>'Status', 'visible'=>'false']
     ];
     
@@ -42,17 +42,6 @@ class UserCRUDController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        
-        
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -61,28 +50,6 @@ class UserCRUDController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
     {
         //
     }
