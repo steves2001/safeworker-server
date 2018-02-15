@@ -406,6 +406,7 @@ function updateRoleModal(userId, name){
      $("#roleUserId").val( userId );
      $("#roleUserName").text( name );
      $('#userRoleUpdateModal :checkbox').prop('checked', false);
+     $('#userRoleUpdateModal .errorMessage').removeClass('visible').addClass('invisible')
      $.ajax({
         url: api + 'userroles/users/' + userId,
         headers: {
@@ -416,8 +417,10 @@ function updateRoleModal(userId, name){
         data: "",
         success: function(roles) {
             console.log(roles);
-            for (const role of roles)
+            for (const role of roles){
                 $('#checkRole'+role.roleid).prop('checked', true);
+                $('#checkRole'+role.roleid).data('roleid', role.id);
+            }
         }, // End of success
         error: function(data) {
             console.log(data);
@@ -426,18 +429,54 @@ function updateRoleModal(userId, name){
 }     
 
 
-function ajaxChangeRole(roleId, object){
-    userId = $("#roleUserId").val();
+function ajaxChangeRole(userRole, object){
+    userId = "";
+    ajaxData = "";
+    ajaxCRUD = "";
     
     if($(object).is(':checked')){
         ajaxCRUD = "POST";
+        ajaxData= {userid: $("#roleUserId").val(), roleid: userRole};
+        
     } else {
         ajaxCRUD = "DELETE";
+        userId = "/" + $(object).data('roleid');
     }
-    alert(ajaxCRUD);
+    
+    $.ajax({
+        url: api + 'userroles' + userId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: ajaxCRUD,
+        data: ajaxData,
+        statusCode: {
+            404: function(data) {
+                  toastr["error"]('Operation failed, user role could not be found');
+                  updateCheckBoxInfo(data, userRole, object, false);
+            }            
+        },        
+        success: function(data) { 
+            updateCheckBoxInfo(data, userRole, object, true);
+            console.log(data);
+        }, // End of success
+        error: function(data) { updateCheckBoxInfo(data, userRole, object, false); } // End error
+    }); // End ajax    
+    
     // Do the ajax then set checkbox status
 }
-
+function updateCheckBoxInfo(data, userRole, object, success){
+    if(success){
+        $('#checkRoleError'+userRole).removeClass('visible').addClass('invisible');
+        $('#checkRole'+userRole).data('roleid', data.id);
+    }
+    else {
+        $('#checkRoleError'+userRole).removeClass('invisible').addClass('visible'); 
+        $('#checkRole'+userRole).data('roleid', "");
+        $(object).prop('checked', !$(object).is(':checked'));
+    }
+}
 // End update user role modal
 // ---------------------------------------------------------------------------
 // Setup modal to submit data via ajax

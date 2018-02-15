@@ -24,6 +24,9 @@ Route::post('password/reset', 'API\PasswordController@resetPassword');
 Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 
 Route::get('userroles/users/{id}', 'UserRoleCRUDController@indexByUser');
+Route::post('userroles', 'UserRoleCRUDController@store');
+Route::delete('userroles/{id}', 'UserRoleCRUDController@destroy');
+
 Route::group(['middleware' => 'auth:api'], function(){
     // Basic logged in user routes
     Route::put('password/change', 'API\PasswordController@changePassword');

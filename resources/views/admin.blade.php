@@ -262,12 +262,11 @@
                             @foreach ($roles as $role)
                             <div class="ml-5 mb-1">
                                 <input id="checkRole{{ $role->id }}" type="checkbox" class="filled-in" onclick="ajaxChangeRole({{ $role->id }}, this);">
-                                <label for="checkRole{{ $role->id }}">{{ $role->role }}</label>
+                                <label for="checkRole{{ $role->id }}">{{ $role->role }}</label><span id="checkRoleError{{ $role->id }}" class="invisible errorMessage"> Error Changing Role</span>
                            </div>
                             @endforeach
                            <div class="text-center mt-2 mb-2">
-                                <button type="submit" class="btn btn-primary-modal">Update</button>
-                                <button type="button" class="btn btn-outline-secondary-modal waves-effect" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary-modal" data-dismiss="modal">Close</button>
                            </div>
                         </form>
                     </div>

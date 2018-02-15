@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\UserRole;
+use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRoleCRUDController extends Controller
 {
@@ -52,22 +54,22 @@ class UserRoleCRUDController extends Controller
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], $this->errorStatus);            
         }
-        
-        // Update the record
+        $userrole = new UserRole;
+         // Check record existence
         try
         {
-            $userrole = new UserRole; 
+            $userrole = UserRole::where('userid', '=', $request->userid)->where('roleid', '=', $request->roleid)->firstOrFail();
+        }
+        catch(ModelNotFoundException $e)
+        {
+            // Update the record
             $userrole->userid = $request->userid;
             $userrole->roleid = $request->roleid;
             $userrole->save();
         }
-        catch(\Exception $e)
-        {
-             return response()->json(['id'=>$request->userid, 'role'=>$request->roleid], $this->errorConflict);
-        }
-        
+
         // Return a success
-        return response()->json(['id'=>$request->userid, 'role'=>$request->roleid], $this->successStatus);        
+        return response()->json(['id'=>$userrole->id, 'userid'=>$request->userid, 'roleid'=>$request->roleid], $this->successStatus);        
     }
     
     /**
@@ -100,8 +102,15 @@ class UserRoleCRUDController extends Controller
      * @param  \App\UserRole  $userRole
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserRole $userRole)
+    public function destroy($roleId)
     {
-        //
+        $result = UserRole::destroy($roleId);
+        // Delete success 200 or fail 404 responses
+        if($result){
+            return response()->json(['id'=>$roleId], $this->successStatus);
+        }
+        else{
+            return response()->json(['id'=>$roleId], $this->errorNotFound);
+        }
     }
 }
