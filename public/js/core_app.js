@@ -323,11 +323,22 @@ function setupChangePasswordForm(){
 
 function setupNavigationMenu(){
        
+    $("#manageAnnouncements").click(function(e) { 
+        $('#myModal').modal('show')
+    }); // End     
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
         setTableButton('#userAdminToolbar', 'refresh', ajaxGetAllUsers);
         setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
         
+    }); // End   
+    $("#addUser").click(function(e) {
+        displaySingleSection('');
+        $('#userAddModal').modal('show');
+    }); // End     
+    $("#manageLogs").click(function(e) {        
+    }); // End   
+    $("#reviewLogs").click(function(e) {        
     }); // End   
 }
 // End setup Navigation
@@ -428,7 +439,58 @@ function updateRoleModal(userId, name){
     }); // End ajax    
 }     
 
+// ---------------------------------------------------------------------------
+// Add user modal setup
 
+function setupAddUserModalForm(){
+    $("#userAddForm").submit(function(e) {
+        cancelDefaultBehaviour(e);
+        ajaxAddUser(e, "#userAddForm");
+    }); // End submit
+
+}
+// End add user modal setup
+// ---------------------------------------------------------------------------
+// Add User
+
+function ajaxAddUser(e, FormName) {
+    var formData = $(FormName).serialize();
+    console.log(formData);
+    $.ajax({
+        url: api + 'users',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            $('#userAddModal').modal('hide');
+            toastr["success"](data.success);
+            
+        }, // End of success
+        error: function(data) {
+            console.log("Register Failed Response Data");
+            console.log(data.responseText);
+            var obj = jQuery.parseJSON(data.responseText);
+            if(obj.error.name) {
+                toastr["warning"](obj.error.name);
+            }
+            if(obj.error.email) {
+                toastr["warning"](obj.error.email);
+            }
+            if(obj.error.password) {
+                toastr["warning"](obj.error.password);
+            }
+            if(obj.error.c_password) {
+                toastr["warning"]("Passwords do not match");
+            }
+            toastr["error"]("User Registration Failed");
+        } // End error
+    }); // End ajax
+}
+// End add user
+// ---------------------------------------------------------------------------
 function ajaxChangeRole(userRole, object){
     userId = "";
     ajaxData = "";
@@ -650,6 +712,7 @@ function ajaxGetAllUsers(){
         logout();
     }); // End logoutButton.click
     setupUserModalForm();
+    setupAddUserModalForm();
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

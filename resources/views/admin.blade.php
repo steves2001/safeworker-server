@@ -243,6 +243,45 @@
         <!-- End Login Form with header -->
         
         <!-- Start user admin modals -->
+        <!--Start Add user modal -->
+        <section id="userAddModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document">
+                <div class="modal-content">
+                <!--Header-->
+                    <div class="modal-header">
+                        <p class="heading lead">Add New User</p>
+                    </div>
+                <!--End Header-->
+                <!--Body-->
+                    <div class="modal-body mx-4 mt-2">
+                        <form id="userAddForm" action="#" method="POST"  novalidate>
+                            <div class="md-form">
+                                <input id="userAddName" type="text" title="Please enter your name" required value="" name="name" class="form-control">
+                                <label for="userAddName">User name</label>
+                            </div>
+                            <div class="md-form">
+                                <input id="userAddEmail" type="text" title="Please enter your email" required value="" name="email" class="form-control">
+                                <label for="userAddEmail">College email</label>
+                            </div>
+                            <div class="md-form">
+                                <input id="userAddPassword" type="password" class="form-control" name="password">
+                                <label for="userAddPassword">Password</label>
+                            </div>
+                            <div class="md-form">
+                                <input id="userAddC_password" type="password" class="form-control" name="c_password">
+                                <label for="userAddC_password">Confirm password</label>
+                            </div>
+                            <div class="text-center mt-2 mb-2">
+                                <button type="submit" class="btn btn-primary-modal">Add User</button>
+                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                <!--End Body-->
+                </div>
+            </div>
+        </section>
+        <!-- End add user modal -->
         <section id="userRoleUpdateModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-notify modal-info" role="document">
                 <div class="modal-content">
@@ -303,7 +342,7 @@
                                 </div>
                                 <div class="text-center mb-4">
                                     <button type="submit" class="btn btn-primary-modal">Update</button>
-                                    <button type="button" class="btn btn-outline-secondary-modal waves-effect" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
                                 </div>
                             </form>
                         </div>
