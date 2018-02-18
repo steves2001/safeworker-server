@@ -324,7 +324,7 @@ function setupChangePasswordForm(){
 function setupNavigationMenu(){
        
     $("#manageAnnouncements").click(function(e) { 
-        $('#myModal').modal('show')
+        $('#announcmentUpdateModal').modal('show')
     }); // End     
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
@@ -683,7 +683,19 @@ function ajaxGetAllUsers(){
 // End get all the users from the server and display as a table
 // ---------------------------------------------------------------------------
 // End User Administration Methods
-
+function setupTinyMCE(){
+    // Prevent Bootstrap dialog from blocking focusin
+    $(document).on('focusin', function(e) {
+      if ($(e.target).closest(".mce-window").length) {
+        e.stopImmediatePropagation();
+      }
+    });
+    tinymce.init({
+      selector: 'textarea#editor',
+        menubar: false,
+        toolbar: "bold alignleft aligncenter alignright alignjustify removeformat formatselect bullist numlist outdent, indent undo redo"
+    });
+}
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
@@ -713,6 +725,7 @@ function ajaxGetAllUsers(){
     }); // End logoutButton.click
     setupUserModalForm();
     setupAddUserModalForm();
+    setupTinyMCE();
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

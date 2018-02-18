@@ -15,6 +15,8 @@
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
     <link href="css/bootstrap-table.css" rel="stylesheet">
+    <!-- Text Editor -->
+    
     <!-- Custom styles -->
     <link href="css/style.css" rel="stylesheet">
 
@@ -106,6 +108,31 @@
 
     <!-- Project start-->
     <div class="container-fluid">
+        <section id="announcmentUpdateModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document">
+                    <div class="modal-content">
+                        <!--Header-->
+                        <div class="modal-header">
+                                <p class="heading lead">Update Announcement</p>
+                        </div>
+                        <!--End Header-->
+                        <!--Body-->
+                        <div class="modal-body mx-0 mt-4">
+                                <label for="announceTitle">Title</label>
+                                <input type="text" id="announceTitle" class="form-control" name="title"><br>
+                                <label for="editor">Announcement</label>
+                                <textarea id="editor" name="announcement">Hello....</textarea>
+                                <div class="text-center mt-3 mb-1">
+                                    <button type="button" class="btn btn-primary-modal">Update</button>
+                                    <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                                </div>
+                        </div>
+                        <!--End Body-->
+                    </div>
+            </div>
+        </section>
+        
+        
         <!-- Start password change form with header-->
         <section id="changePasswordSection" class="form-simple d-none container-fluid">
             <div class="row justify-content-center">
@@ -403,9 +430,11 @@
     <script type="text/javascript" src="js/bootstrap-table.js"></script>
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
-    
+    <!-- text editor -->
+    <script src='js/tinymce/tinymce.min.js'></script>
     <!-- PWA Scripts -->
     <script type="text/javascript" src="js/core_app.js" async></script>
+    <!-- Custom font awesome icons for bootstrap table -->
     <script>
     window.icons = {
         paginationSwitchDown: 'fa-chevron-down',

@@ -1,4 +1,8 @@
 /* Custom styles */
+/* Ensure icons in summernote are black */
+
+.note-btn-group i, .note-btn-group span { color: #000 !important; }
+
 .visible {
   visibility: visible;
 }
