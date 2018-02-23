@@ -323,8 +323,11 @@ function setupChangePasswordForm(){
 
 function setupNavigationMenu(){
        
+    $("#addAnnouncement").click(function(e) { 
+        $('#addAnnouncementModal').modal('show')
+    }); // End     
     $("#manageAnnouncements").click(function(e) { 
-        $('#announcmentUpdateModal').modal('show')
+        $('#addAnnouncementModal').modal('show')
     }); // End     
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
@@ -683,6 +686,10 @@ function ajaxGetAllUsers(){
 // End get all the users from the server and display as a table
 // ---------------------------------------------------------------------------
 // End User Administration Methods
+// ---------------------------------------------------------------------------
+// Start announcement administration methods
+// ---------------------------------------------------------------------------
+// Set up  the tiny MCE editor to suit the needs of the app
 function setupTinyMCE(){
     // Prevent Bootstrap dialog from blocking focusin
     $(document).on('focusin', function(e) {
@@ -696,6 +703,47 @@ function setupTinyMCE(){
         toolbar: "bold alignleft aligncenter alignright alignjustify removeformat formatselect bullist numlist outdent, indent undo redo"
     });
 }
+// End setup tinyMCE
+// ---------------------------------------------------------------------------
+// Set up  the new announcement modal
+function setupAddAnnouncementModal(){
+    $("#addAnnouncementForm").submit(function(e) {
+        cancelDefaultBehaviour(e);
+        ajaxAddAnnouncement(e, "#addAnnouncementForm");
+    }); // End submit    
+}
+// End set up the new announcement modal
+// ---------------------------------------------------------------------------
+// Set up 
+//function setupAddAnnouncementModal(){
+    
+//}
+// End set up 
+// ---------------------------------------------------------------------------
+// Submit a security announcement to the server
+function ajaxAddAnnouncement(e, announcementFormName) {
+    var formData = $(announcementFormName).serialize();
+    console.log(formData);
+    $.ajax({
+        url: api + 'announcement/submit/' + $('#announceSource').val().toLowerCase(),
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            toastr["success"](data.success);
+            console.log(data);
+        }, // End of success
+        error: function(data) {
+            toastr["error"](data.responseJSON["error"]);
+        } // End error
+    }); // End ajax
+}
+// End submit a security announcement to the server
+// ---------------------------------------------------------------------------
+// End announcement administration methods
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
@@ -726,6 +774,7 @@ function setupTinyMCE(){
     setupUserModalForm();
     setupAddUserModalForm();
     setupTinyMCE();
+    setupAddAnnouncementModal();
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

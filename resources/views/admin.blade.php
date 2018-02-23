@@ -108,27 +108,37 @@
 
     <!-- Project start-->
     <div class="container-fluid">
-        <section id="announcmentUpdateModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <section id="addAnnouncementModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-notify modal-info" role="document">
-                    <div class="modal-content">
-                        <!--Header-->
-                        <div class="modal-header">
-                                <p class="heading lead">Update Announcement</p>
-                        </div>
-                        <!--End Header-->
-                        <!--Body-->
-                        <div class="modal-body mx-0 mt-4">
-                                <label for="announceTitle">Title</label>
-                                <input type="text" id="announceTitle" class="form-control" name="title"><br>
-                                <label for="editor">Announcement</label>
-                                <textarea id="editor" name="announcement">Hello....</textarea>
-                                <div class="text-center mt-3 mb-1">
-                                    <button type="button" class="btn btn-primary-modal">Update</button>
-                                    <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
-                                </div>
-                        </div>
-                        <!--End Body-->
+                <div class="modal-content">
+                    <!--Header-->
+                    <div class="modal-header">
+                            <p class="heading lead">Add Announcement</p>
                     </div>
+                    <!--End Header-->
+                    <!--Body-->
+                    <div class="modal-body mx-0 mt-4">
+                        <form action="#" method="POST" id="addAnnouncementForm" novalidate>
+                            <div class="form-group mb-1 ">
+                              <label for="announceSource" class="indigo-text">Select Category</label>
+                              <select class="form-control d-block" id="announceSource">
+                                @foreach ($sources as $source)
+                                <option value="{{ $source->sourcename }}">{{ $source->sourcename }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <label for="announceTitle" class="mb-0 indigo-text">Announcement Title</label>
+                            <input type="text" id="announceTitle" class="" name="title" style="width: 100%"><span></span>
+                            <label for="editor" class="mt-3 mb-2 indigo-text">Announcement</label>
+                            <textarea id="editor" name="announcement">Hello....</textarea>
+                            <div class="text-center mt-3 mb-1">
+                                <button type="submit" class="btn btn-primary-modal">Add</button>
+                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!--End Body-->
+                </div>
             </div>
         </section>
         
