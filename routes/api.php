@@ -12,9 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-//Sample role entry for system
-//Route::get('announcements', 'API\AnnouncementController@retrieveAnnouncements')->middleware(['role:Admin+Security+HE']);
-
 // Routes not requiring authentication
 Route::post('login', 'API\UserController@login');
 Route::post('register', 'API\UserController@register');

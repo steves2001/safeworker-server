@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Announcement;
+use App\Http\Resources\AnnouncementResource;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +13,39 @@ use Illuminate\Support\Facades\DB;
 
 class AnnouncementController extends Controller
 {
-
+    // List of columns in table
+    protected $columns = [
+        ['field'=>'select', 'checkbox'=>true, 'align'=>'center', 'valign'=>'middle'], 
+        ['field'=>'id', 'title'=>'Id', 'align'=>'right'], 
+        ['field'=>'source', 'title'=>'Source'], 
+        ['field'=>'title', 'title'=>'Title'], 
+        ['field'=>'content', 'title'=>'Content'], 
+        ['field'=>'visible', 'title'=>'Visible'], 
+        ['field'=>'created_at', 'title'=>'Created'], 
+        ['formatter'=>'userTableActions', 'title'=>'Action', 'align'=>'center'],
+        ['field'=>'status', 'title'=>'Status', 'visible'=>'false']
+    ];
+    
+    // HTTP Status codes
     public $successStatus = 200;
     public $errorStatus = 400;
+    public $errorForbidden = 403;
+    public $errorNotFound = 404;
+    public $errorConflict = 409;
+    public $errorUnauthorised = 401;
+     
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        // Return a list of all the announcements on the system.
+        $data['columns'] = $this->columns;
+        $data['data'] = AnnouncementResource::collection(Announcement::select('id','source','title','content','visible','created_at')->get());
+        return response()->json($data);
+    }
     
 
     /**
@@ -67,12 +99,13 @@ class AnnouncementController extends Controller
     {
         // Check for a valid source id
         $validator = Validator::make($request->all(), [
-            'source' => 'required|numeric',
+            'source' => 'numeric',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error'=>$validator->errors()], 401);            
         }
+        
 
         // Extract all the announcements for this source (pagination needs to be investigated)
         $search = $request->all();
@@ -86,10 +119,15 @@ class AnnouncementController extends Controller
             });            
         } 
         
-        $announcements = DB::table('announcements')->where([
-            ['source', '=', $search['source']],
-            ['visible', '=', 'Y'],
-        ])->latest()->paginate(4);
+        if(array_key_exists('source', $search)){
+            $announcements = DB::table('announcements')->where([
+                ['source', '=', $search['source']],
+                ['visible', '=', 'Y'],
+            ])->latest()->paginate(4);            
+        }
+        else {
+            return $this->index();                        
+        }
 
         // Nothing returned send an error (this might be better to just send an empty announcement)
         if ($announcements->count() == 0) {

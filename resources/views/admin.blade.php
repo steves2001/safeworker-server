@@ -421,6 +421,34 @@
             </table>
             </div>                         
         </section>
+        <section id="announcementAdminSection" class="userAdminCheckBox card d-none">
+            <div id="announcementAdminToolbar" class="userAdminText header">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" name="export" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-star fa-sm pr-2" aria-hidden="true"></i>Export</button>
+                    <button type="button" name="delete" class="btn btn-sm btn-red btn-rounded"><i class="fa fa-heart fa-sm pr-2" aria-hidden="true"></i>Delete</button>
+                    <button type="button" name="refresh" class="btn btn-sm btn-purple btn-rounded"><i class="fa fa-user fa-sm pr-2" aria-hidden="true"></i>Refresh</button>
+                </div>
+            </div>
+            <div class="card-body">
+            <table id="announcementAdminTable"
+                   data-toolbar="#announcementAdminToolbar"                   
+                   data-icons-prefix = "fa"
+                   data-icons = "icons"
+                   data-icon-size = "sm"
+                   data-buttons-class = "purple btn-rounded waves-effect waves-light"
+                   data-row-style="userRowStyle" 
+                   data-striped="true" 
+                   data-classes="table-sm table-no-bordered" 
+                   data-search="true"
+                   data-show-columns="true"           
+                   data-pagination="true" 
+                   checkbox = "true"
+                   data-unique-id="id"
+                   data-buttons-align="right">
+                <thead class="mdb-color lighten-4"><tr></tr></thead>
+            </table>
+            </div>                         
+        </section>        
         <!--End of screen gap start -->
         <div>
             <p>&nbsp;</p>

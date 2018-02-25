@@ -327,7 +327,9 @@ function setupNavigationMenu(){
         $('#addAnnouncementModal').modal('show')
     }); // End     
     $("#manageAnnouncements").click(function(e) { 
-        $('#addAnnouncementModal').modal('show')
+        ajaxGetAllAnnouncements();
+        setTableButton('#announcementAdminToolbar', 'refresh', ajaxGetAllAnnouncments);
+        //setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
     }); // End     
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
@@ -743,7 +745,28 @@ function ajaxAddAnnouncement(e, announcementFormName) {
 }
 // End submit a security announcement to the server
 // ---------------------------------------------------------------------------
-// End announcement administration methods
+// Get all the users from the server and display as a table
+
+function ajaxGetAllAnnouncements(){
+    $.ajax({
+        url: api + 'announcements',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'GET',
+        data: "",
+        success: function(data) {
+            displayTable('#announcementAdminTable', data, ['status', 'created_at']);
+            displaySingleSection('announcementAdminSection');            
+        }, // End of success
+        error: function(data) {
+            toastr["error"](data.responseJSON["error"]);
+        } // End error
+    }); // End ajax    
+}
+// End get all the users from the server and display as a table
+// ---------------------------------------------------------------------------// End announcement administration methods
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
