@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Announcement;
+use App\Source;
 use App\Http\Resources\AnnouncementResource;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -18,11 +19,12 @@ class AnnouncementController extends Controller
         ['field'=>'select', 'checkbox'=>true, 'align'=>'center', 'valign'=>'middle'], 
         ['field'=>'id', 'title'=>'Id', 'align'=>'right'], 
         ['field'=>'source', 'title'=>'Source'], 
+        ['field'=>'sourcename', 'title'=>'Source Name'], 
         ['field'=>'title', 'title'=>'Title'], 
         ['field'=>'content', 'title'=>'Content'], 
         ['field'=>'visible', 'title'=>'Visible'], 
         ['field'=>'created_at', 'title'=>'Created'], 
-        ['formatter'=>'userTableActions', 'title'=>'Action', 'align'=>'center'],
+        ['formatter'=>'announcementTableActions', 'title'=>'Action', 'align'=>'center'],
         ['field'=>'status', 'title'=>'Status', 'visible'=>'false']
     ];
     
@@ -43,7 +45,15 @@ class AnnouncementController extends Controller
     {
         // Return a list of all the announcements on the system.
         $data['columns'] = $this->columns;
-        $data['data'] = AnnouncementResource::collection(Announcement::select('id','source','title','content','visible','created_at')->get());
+        $data['data'] = AnnouncementResource::collection(Announcement::select('id','source','source as sourcename','title','content','visible','created_at')->get());
+        $sources = Source::get();
+        // Add the sourcename to the output
+        foreach($data['data'] as &$val) {
+            $val['sourcename'] = $sources[$val->source - 1]['sourcename'];
+        }
+
+        unset($val);       
+
         return response()->json($data);
     }
     
@@ -136,6 +146,76 @@ class AnnouncementController extends Controller
 
         // Send the json annoucements (review paginations later)
         return response()->json(['success'=>$announcements], $this->successStatus);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function update($announcementId, Request $request)
+    {
+        // Check record existence
+        try
+        {
+            $announcement = Announcement::findOrFail($announcementId);
+        }
+        catch(ModelNotFoundException $e)
+        {
+             return response()->json(['id'=>$announcementId], $this->errorNotFound);
+        }
+        
+        // Check valid data
+        $validator = Validator::make($request->all(), [
+            'source' => 'required|integer',
+            'title' => 'required|string',
+            'announcement' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], $this->errorStatus);            
+        }
+        
+        // Update the record
+        try
+        {
+            $announcement->source = $request->source;
+            $announcement->title = $request->title;
+            $announcement->announcement = $request->announcement;
+            $announcement->save();
+        }
+        catch(\Exception $e)
+        {
+             return response()->json(['id'=>$announcementId], $this->errorConflict);
+        }
+        
+        // Return a success
+        return response()->json(['id'=>$announcementId], $this->successStatus);
+    }
+    
+    
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($announcementId)
+    {
+        // Delete the announcement
+        $result = Announcement::where('id',$announcementId)->delete();
+        
+        // Delete success 200 or fail 404 responses
+        if($result){
+            return response()->json(['id'=>$userId], $this->successStatus);
+        }
+        else{
+            return response()->json(['id'=>$userId], $this->errorNotFound);            
+        }
+            
     }
 
 }

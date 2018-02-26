@@ -328,7 +328,7 @@ function setupNavigationMenu(){
     }); // End     
     $("#manageAnnouncements").click(function(e) { 
         ajaxGetAllAnnouncements();
-        setTableButton('#announcementAdminToolbar', 'refresh', ajaxGetAllAnnouncments);
+        //setTableButton('#announcementAdminToolbar', 'refresh', ajaxGetAllAnnouncments);
         //setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
     }); // End     
     $("#manageUsers").click(function(e) {
@@ -706,6 +706,21 @@ function setupTinyMCE(){
     });
 }
 // End setup tinyMCE
+// ---------------------------------------------------------------------------
+// Edit and delete actions for the announcement table
+
+function announcementTableActions(value, row, index, field) {
+
+    return [
+                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementModal('+row.id+', '+row.source+', \''+row.title+'\', \''+row.content+'\')" title="Edit" data-toggle="modal" data-target="#announcementUpdateModal"> ',
+                '<i class="fa fa-pencil" aria-hidden="true"></i>',
+                '</a> &nbsp; ',
+                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteAnnouncement(\'#announcementAdminTable\', '+row.id+')" title="Remove">',
+                '<i class="fa fa-trash" aria-hidden="true"></i>',
+                '</a>'
+            ].join('');
+}
+// End edit and delete actions for the user table
 // ---------------------------------------------------------------------------
 // Set up  the new announcement modal
 function setupAddAnnouncementModal(){
