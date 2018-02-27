@@ -157,6 +157,7 @@ class AnnouncementController extends Controller
      */
     public function update($announcementId, Request $request)
     {
+        return response()->json(['id'=>$announcementId], $this->successStatus);
         // Check record existence
         try
         {
@@ -183,7 +184,7 @@ class AnnouncementController extends Controller
         {
             $announcement->source = $request->source;
             $announcement->title = $request->title;
-            $announcement->announcement = $request->announcement;
+            $announcement->content = $request->announcement;
             $announcement->save();
         }
         catch(\Exception $e)

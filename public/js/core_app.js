@@ -712,7 +712,7 @@ function setupTinyMCE(){
 function announcementTableActions(value, row, index, field) {
 
     return [
-                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementModal('+row.id+', '+row.source+', \''+row.title+'\', \''+row.content+'\')" title="Edit" data-toggle="modal" data-target="#announcementUpdateModal"> ',
+                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementModal('+row.id+', '+row.source+', \''+row.title+'\', \''+row.content+'\')" title="Edit" data-toggle="modal" data-target="#updateAnnouncementModal"> ',
                 '<i class="fa fa-pencil" aria-hidden="true"></i>',
                 '</a> &nbsp; ',
                 '<a class="" href="javascript:void(0)" onclick="ajaxDeleteAnnouncement(\'#announcementAdminTable\', '+row.id+')" title="Remove">',
@@ -732,9 +732,14 @@ function setupAddAnnouncementModal(){
 // End set up the new announcement modal
 // ---------------------------------------------------------------------------
 // Set up 
-//function setupAddAnnouncementModal(){
-    
-//}
+// Setup modal to submit data via ajax
+function setupUpdateAnnouncementModalForm(){
+    $("#updateAnnouncementForm").submit(function(e) {
+        cancelDefaultBehaviour(e);
+        ajaxUpdateAnnouncement($("#updateAnnouncementId").val(), $("#updateAnnouncementForm").serialize());
+    });  
+}
+// End modal setup
 // End set up 
 // ---------------------------------------------------------------------------
 // Submit a security announcement to the server
@@ -781,7 +786,75 @@ function ajaxGetAllAnnouncements(){
     }); // End ajax    
 }
 // End get all the users from the server and display as a table
-// ---------------------------------------------------------------------------// End announcement administration methods
+// ---------------------------------------------------------------------------
+// Update user modal with data from the table row
+
+function updateAnnouncementModal(id, sourceid, title, content){
+     $("#updateAnnouncementId").val( id );
+     $("#updateAnnouncementSourceId").val( sourceid );
+     $("#updateAnnouncementTitle").val( title );
+     $("#updateAnnouncementContent").val( content );
+}
+// End update user modal
+// ---------------------------------------------------------------------------
+// Update user table row from user modal
+
+function updateAnnouncementRowFromModal(){
+    $('#announcementAdminTable').bootstrapTable('updateByUniqueId', {
+        id: $("#updateAnnouncementId").val(),
+        row: {
+            source: $("#updateAnnouncementSourceId").val(),
+            sourcename: $("#updateAnnouncementSourceId option:selected").text(),
+            title: $("#updateAnnouncementTitle").val(),
+            content: $("#updateAnnouncementContent").val(),
+            status: null
+        }
+    });
+}
+// End update user table row from user modal
+// ---------------------------------------------------------------------------
+// Update announcement using ajax
+
+function ajaxUpdateAnnouncement(announcementId, announcementData){
+    rowData = $('#announcementAdminTable').bootstrapTable('getRowByUniqueId', announcementId);
+    if(rowData.status) return;
+    console.log(rowData);
+    $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: announcementId, row: { status: 'UPDATING' } });
+    $.ajax({
+        url: api + 'announcement/' + announcementId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'PATCH',
+        data: announcementData,
+        statusCode: {
+            400: function(data) {
+                toastr["error"]('Update operation failed, sent data missing either sourceid, title or content');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
+            },
+            404: function(data) {
+                toastr["error"]('Update operation failed, user could not be found');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            },
+            409: function(data) {
+                toastr["error"]('Update operation failed, there was a server conflict during update');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
+            }            
+        },
+        success: function(user, status) {
+            updateAnnouncementRowFromModal();
+            $('#updateAnnouncementModal').modal('hide');
+            toastr["success"]('Announcement was updated on the the system'); 
+        }, // End of success
+        error: function(data) {
+            console.log(data);
+        } // End error
+    }); // End ajax    
+}
+// End update announcement
+// ---------------------------------------------------------------------------
+// End announcement administration methods
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {
@@ -813,6 +886,8 @@ function ajaxGetAllAnnouncements(){
     setupAddUserModalForm();
     setupTinyMCE();
     setupAddAnnouncementModal();
+    setupUpdateAnnouncementModalForm();
+    
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

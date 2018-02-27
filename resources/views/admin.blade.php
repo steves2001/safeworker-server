@@ -142,6 +142,43 @@
             </div>
         </section>
         
+        <section id="updateAnnouncementModal" class="modal fade top" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document">
+                <div class="modal-content">
+                    <!--Header-->
+                    <div class="modal-header">
+                            <p class="heading lead">Update Announcement</p>
+                    </div>
+                    <!--End Header-->
+                    <!--Body-->
+                    <div class="modal-body mx-0 mt-4">
+                        <form action="#" method="POST" id="updateAnnouncementForm" novalidate>
+                            <div class="md-form d-none">
+                                <input id="updateAnnouncementId" type="text" title="Please enter your id" required value="" name="id" class="form-control">
+                            </div>
+                            <div class="form-group mb-1 ">
+                              <label for="updateAnnouncementSourceId" class="indigo-text">Select Category</label>
+                              <select class="form-control d-block" id="updateAnnouncementSourceId" name="source">
+                                @foreach ($sources as $source)
+                                <option value="{{ $source->id }}">{{ $source->sourcename }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <label for="updateAnnouncementTitle" class="mb-0 indigo-text">Announcement Title</label>
+                            <input type="text" id="updateAnnouncementTitle" class="" name="title" style="width: 100%"><span></span>
+                            <label for="updateAnnouncementContent" class="mt-3 mb-2 indigo-text">Announcement</label>
+                            <textarea id="updateAnnouncementContent" name="announcement">Hello....</textarea>
+                            <div class="text-center mt-3 mb-1">
+                                <button type="submit" class="btn btn-primary-modal">Update</button>
+                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!--End Body-->
+                </div>
+            </div>
+        </section>
+
         
         <!-- Start password change form with header-->
         <section id="changePasswordSection" class="form-simple d-none container-fluid">
