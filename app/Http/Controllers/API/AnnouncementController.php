@@ -17,13 +17,13 @@ class AnnouncementController extends Controller
     // List of columns in table
     protected $columns = [
         ['field'=>'select', 'checkbox'=>true, 'align'=>'center', 'valign'=>'middle'], 
-        ['field'=>'id', 'title'=>'Id', 'align'=>'right'], 
+        ['field'=>'id', 'title'=>'Id', 'align'=>'right', 'sortable'=>'true'], 
         ['field'=>'source', 'title'=>'Source'], 
-        ['field'=>'sourcename', 'title'=>'Source Name'], 
-        ['field'=>'title', 'title'=>'Title'], 
+        ['field'=>'sourcename', 'title'=>'Source Name', 'sortable'=>'true'], 
+        ['field'=>'title', 'title'=>'Title', 'sortable'=>'true'], 
         ['field'=>'content', 'title'=>'Content'], 
-        ['field'=>'visible', 'title'=>'Visible'], 
-        ['field'=>'created_at', 'title'=>'Created'], 
+        ['field'=>'visible', 'title'=>'Visible', 'sortable'=>'true'], 
+        ['field'=>'created_at', 'title'=>'Created', 'sortable'=>'true'], 
         ['formatter'=>'announcementTableActions', 'title'=>'Action', 'align'=>'center'],
         ['field'=>'status', 'title'=>'Status', 'visible'=>'false']
     ];
@@ -157,7 +157,7 @@ class AnnouncementController extends Controller
      */
     public function update($announcementId, Request $request)
     {
-        return response()->json(['id'=>$announcementId], $this->successStatus);
+        //return response()->json(['id'=>$announcementId], $this->successStatus);
         // Check record existence
         try
         {
@@ -172,11 +172,13 @@ class AnnouncementController extends Controller
         $validator = Validator::make($request->all(), [
             'source' => 'required|integer',
             'title' => 'required|string',
-            'announcement' => 'required|string',
+            'announcement' => 'required_without:content|string',
+            'content' => 'required_without:announcement|string',
+            'visible' => 'in:Y,N'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error'=>$validator->errors()], $this->errorStatus);            
+            return response()->json(['error'=>$validator->errors()], $this->errorStatus);  
         }
         
         // Update the record
@@ -184,7 +186,9 @@ class AnnouncementController extends Controller
         {
             $announcement->source = $request->source;
             $announcement->title = $request->title;
-            $announcement->content = $request->announcement;
+            if ($request->announcement) $announcement->content = $request->announcement;
+            if ($request->content) $announcement->content = $request->content;
+            if ($request->visible) $announcement->visible = $request->visible;
             $announcement->save();
         }
         catch(\Exception $e)
@@ -211,10 +215,10 @@ class AnnouncementController extends Controller
         
         // Delete success 200 or fail 404 responses
         if($result){
-            return response()->json(['id'=>$userId], $this->successStatus);
+            return response()->json(['id'=>$announcementId], $this->successStatus);
         }
         else{
-            return response()->json(['id'=>$userId], $this->errorNotFound);            
+            return response()->json(['id'=>$announcementId], $this->errorNotFound);            
         }
             
     }

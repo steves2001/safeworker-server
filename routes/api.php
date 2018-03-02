@@ -44,13 +44,14 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('announcement/submit/general', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Editor'])->name('General');
     Route::post('announcement/submit/library', 'API\AnnouncementController@submitAnnouncement')->middleware(['role:Admin+Editor'])->name('Library');
 
-    Route::patch('announcement/{id}', 'API\AnnouncementController@update')->middleware(['role:Admin+Editor']);
+    Route::patch('announcements/{id}', 'API\AnnouncementController@update')->middleware(['role:Admin+Editor']);
+    Route::delete('announcements/{id}', 'API\AnnouncementController@destroy')->middleware(['role:Admin+Editor']);
 
     // Admin CRUD related routes
     // User CRUD
     Route::resource('users', 'UserCRUDController')->middleware(['role:Admin']);
     // User Permisssion CRUD
-    Route::get('userroles/users/{id}', 'UserRoleCRUDController@indexByUser');
-    Route::post('userroles', 'UserRoleCRUDController@store');
-    Route::delete('userroles/{id}', 'UserRoleCRUDController@destroy');
+    Route::get('userroles/users/{id}', 'UserRoleCRUDController@indexByUser')->middleware(['role:Admin']);
+    Route::post('userroles', 'UserRoleCRUDController@store')->middleware(['role:Admin']);
+    Route::delete('userroles/{id}', 'UserRoleCRUDController@destroy')->middleware(['role:Admin']);
 });

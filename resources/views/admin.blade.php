@@ -130,7 +130,7 @@
                             <label for="announceTitle" class="mb-0 indigo-text">Announcement Title</label>
                             <input type="text" id="announceTitle" class="" name="title" style="width: 100%"><span></span>
                             <label for="editor" class="mt-3 mb-2 indigo-text">Announcement</label>
-                            <textarea id="editor" name="announcement">Hello....</textarea>
+                            <textarea id="editor" class="mce-editor" name="announcement">Hello....</textarea>
                             <div class="text-center mt-3 mb-1">
                                 <button type="submit" class="btn btn-primary-modal">Add</button>
                                 <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
@@ -167,7 +167,7 @@
                             <label for="updateAnnouncementTitle" class="mb-0 indigo-text">Announcement Title</label>
                             <input type="text" id="updateAnnouncementTitle" class="" name="title" style="width: 100%"><span></span>
                             <label for="updateAnnouncementContent" class="mt-3 mb-2 indigo-text">Announcement</label>
-                            <textarea id="updateAnnouncementContent" name="announcement">Hello....</textarea>
+                            <textarea id="updateAnnouncementContent" class="mce-editor" name="announcement"></textarea>
                             <div class="text-center mt-3 mb-1">
                                 <button type="submit" class="btn btn-primary-modal">Update</button>
                                 <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>

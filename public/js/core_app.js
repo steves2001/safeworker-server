@@ -324,23 +324,25 @@ function setupChangePasswordForm(){
 function setupNavigationMenu(){
        
     $("#addAnnouncement").click(function(e) { 
+        displaySingleSection('');
         $('#addAnnouncementModal').modal('show')
     }); // End     
     $("#manageAnnouncements").click(function(e) { 
         ajaxGetAllAnnouncements();
-        //setTableButton('#announcementAdminToolbar', 'refresh', ajaxGetAllAnnouncments);
-        //setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
-    }); // End     
+        setTableButton('#announcementAdminToolbar', 'refresh', ajaxGetAllAnnouncements);
+        setTableButton('#announcementAdminToolbar', 'delete', ajaxDeleteMultipleAnnouncements);
+    }); // End
+    
     $("#manageUsers").click(function(e) {
         ajaxGetAllUsers();
         setTableButton('#userAdminToolbar', 'refresh', ajaxGetAllUsers);
-        setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);
-        
+        setTableButton('#userAdminToolbar', 'delete', ajaxDeleteMultipleUsers);        
     }); // End   
     $("#addUser").click(function(e) {
         displaySingleSection('');
         $('#userAddModal').modal('show');
-    }); // End     
+    }); // End 
+    
     $("#manageLogs").click(function(e) {        
     }); // End   
     $("#reviewLogs").click(function(e) {        
@@ -403,13 +405,19 @@ function userRowStyle(row, index) {
 function userTableActions(value, row, index, field) {
 
     return [
-                '<a class="" href="javascript:void(0)" onclick="updateRoleModal('+row.id+', \''+row.name+'\')" title="Edit Role" data-toggle="modal" data-target="#userRoleUpdateModal"> ',
+                '<a class="" href="javascript:void(0)" onclick="updateRoleModal('
+                +row.id+', \''
+                +row.name+'\')" title="Edit Role" data-toggle="modal" data-target="#userRoleUpdateModal"> ',
                 '<i class="fa fa-cogs" aria-hidden="true"></i>',
                 '</a> &nbsp; ',
-                '<a class="" href="javascript:void(0)" onclick="updateUserModal('+row.id+', \''+row.name+'\', \''+row.email+'\')" title="Edit" data-toggle="modal" data-target="#userUpdateModal"> ',
+                '<a class="" href="javascript:void(0)" onclick="updateUserModal('
+                +row.id+', \''
+                +row.name+'\', \''
+                +row.email+'\')" title="Edit" data-toggle="modal" data-target="#userUpdateModal"> ',
                 '<i class="fa fa-pencil" aria-hidden="true"></i>',
                 '</a> &nbsp; ',
-                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteUser(\'#userAdminTable\', '+row.id+')" title="Remove">',
+                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteUser(\'#userAdminTable\', '
+                +row.id+')" title="Remove">',
                 '<i class="fa fa-trash" aria-hidden="true"></i>',
                 '</a>'
             ].join('');
@@ -574,9 +582,7 @@ function updateUserRowFromModal(){
                     email: $("#updateEmail").val(),
                     status: null
                 }
-            });
-
-    
+            });    
 }
 // End update user table row from user modal
 // ---------------------------------------------------------------------------
@@ -700,7 +706,7 @@ function setupTinyMCE(){
       }
     });
     tinymce.init({
-      selector: 'textarea#editor',
+       selector: 'textarea.mce-editor',
         menubar: false,
         toolbar: "bold alignleft aligncenter alignright alignjustify removeformat formatselect bullist numlist outdent, indent undo redo"
     });
@@ -710,12 +716,25 @@ function setupTinyMCE(){
 // Edit and delete actions for the announcement table
 
 function announcementTableActions(value, row, index, field) {
-
+    
+    if (row.visible == "Y") 
+        postVisibility = "fa fa-eye"
+    else
+        postVisibility = "fa fa-eye-slash"
+    
     return [
-                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementModal('+row.id+', '+row.source+', \''+row.title+'\', \''+row.content+'\')" title="Edit" data-toggle="modal" data-target="#updateAnnouncementModal"> ',
+                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementVisibility(\''+ row.id +'\')" title="Change Visibility">',
+                '<i class="' + postVisibility + '" aria-hidden="true"></i>',
+                '</a> &nbsp; ',
+                '<a class="" href="javascript:void(0)" onclick="updateAnnouncementModal('
+                + row.id
+                + ', '     + row.source
+                + ', \''   + row.title
+                + '\', \'' + encodeURIComponent(row.content)
+                + '\')" title="Edit" data-toggle="modal" data-target="#updateAnnouncementModal"> ',
                 '<i class="fa fa-pencil" aria-hidden="true"></i>',
                 '</a> &nbsp; ',
-                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteAnnouncement(\'#announcementAdminTable\', '+row.id+')" title="Remove">',
+                '<a class="" href="javascript:void(0)" onclick="ajaxDeleteAnnouncement( '+ row.id +' )" title="Remove">',
                 '<i class="fa fa-trash" aria-hidden="true"></i>',
                 '</a>'
             ].join('');
@@ -777,7 +796,7 @@ function ajaxGetAllAnnouncements(){
         type: 'GET',
         data: "",
         success: function(data) {
-            displayTable('#announcementAdminTable', data, ['status', 'created_at']);
+            displayTable('#announcementAdminTable', data, ['source', 'content', 'status', 'created_at', 'visible']);
             displaySingleSection('announcementAdminSection');            
         }, // End of success
         error: function(data) {
@@ -793,7 +812,9 @@ function updateAnnouncementModal(id, sourceid, title, content){
      $("#updateAnnouncementId").val( id );
      $("#updateAnnouncementSourceId").val( sourceid );
      $("#updateAnnouncementTitle").val( title );
-     $("#updateAnnouncementContent").val( content );
+     $("#updateAnnouncementContent").val( '' );
+     tinyMCE.activeEditor.setContent('');
+     tinymce.activeEditor.setContent(decodeURIComponent(content));
 }
 // End update user modal
 // ---------------------------------------------------------------------------
@@ -806,7 +827,7 @@ function updateAnnouncementRowFromModal(){
             source: $("#updateAnnouncementSourceId").val(),
             sourcename: $("#updateAnnouncementSourceId option:selected").text(),
             title: $("#updateAnnouncementTitle").val(),
-            content: $("#updateAnnouncementContent").val(),
+            content: tinymce.activeEditor.getContent(),
             status: null
         }
     });
@@ -821,7 +842,7 @@ function ajaxUpdateAnnouncement(announcementId, announcementData){
     console.log(rowData);
     $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: announcementId, row: { status: 'UPDATING' } });
     $.ajax({
-        url: api + 'announcement/' + announcementId,
+        url: api + 'announcements/' + announcementId,
         headers: {
             'Accept': 'application/json',
             'Authorization': 'Bearer ' + getAPIToken()
@@ -853,6 +874,96 @@ function ajaxUpdateAnnouncement(announcementId, announcementData){
     }); // End ajax    
 }
 // End update announcement
+// ---------------------------------------------------------------------------
+// Delete a announcement from the system
+
+function ajaxDeleteAnnouncement(announcementId){
+    rowData = $('#announcementAdminTable').bootstrapTable('getRowByUniqueId', announcementId);
+    if(rowData.status) return;
+    $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: announcementId, row: { status: 'DELETING' } });
+    $.ajax({
+        url: api + 'announcements/' + announcementId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'DELETE',
+        data: "",
+        statusCode: {
+            404: function(data) {
+                toastr["error"]('Delete operation failed, announcement could not be found');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            }            
+        },
+        success: function(announcement, status) {
+            $('#announcementAdminTable').bootstrapTable('removeByUniqueId', announcement.id);
+            toastr["success"]('Announcement was deleted from the system'); 
+        }, // End of success
+        error: function(data) {
+            console.log(data.responseJSON["id"]);
+        } // End error
+    }); // End ajax    
+}
+// End delete announcement from system
+// ---------------------------------------------------------------------------
+// Delete multiple announcements from the system
+function ajaxDeleteMultipleAnnouncements(){
+    for (const announcement of $('#announcementAdminTable').bootstrapTable('getSelections')){
+        ajaxDeleteAnnouncement(announcement.id);
+    }
+    $('#announcementAdminTable').bootstrapTable('uncheckAll');
+}
+// End delete multiple announcements from the system
+// ---------------------------------------------------------------------------
+function updateAnnouncementVisibility(announcementId){
+    data = $('#announcementAdminTable').bootstrapTable('getRowByUniqueId', announcementId);
+    
+    if(data.status) return;
+    $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: announcementId, row: { status: 'UPDATING' } });
+    
+    if (data.visible == 'Y') {
+        data.visible = 'N';
+    }    
+    else {
+        data.visible = 'Y';
+    }
+    
+    $.ajax({
+        url: api + 'announcements/' + announcementId,
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'PATCH',
+        data: data,
+        visibility: data.visible,
+        statusCode: {
+            400: function(data) {
+                toastr["error"]('Update operation failed, sent data missing either sourceid, title or content');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
+            },
+            404: function(data) {
+                toastr["error"]('Update operation failed, user could not be found');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: 'ERROR' } });
+            },
+            409: function(data) {
+                toastr["error"]('Update operation failed, there was a server conflict during update');
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: data.responseJSON["id"], row: { status: null } });
+            }            
+        },
+        success: function(announcement, status){
+                $('#announcementAdminTable').bootstrapTable('updateByUniqueId', { id: announcement.id, row: { visible: this.visibility, status: null } });
+                toastr["success"]('Announcement was updated on the the system'); 
+                console.log(announcement);    
+        }, // End of success
+        error: function(data) {
+            console.log(data);
+        } // End error
+    }); // End ajax    
+
+   console.log(data);
+    
+}
 // ---------------------------------------------------------------------------
 // End announcement administration methods
 // ---------------------------------------------------------------------------
