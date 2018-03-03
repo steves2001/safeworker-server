@@ -57,49 +57,6 @@ class AnnouncementController extends Controller
         return response()->json($data);
     }
     
-
-    /**
-     * 
-     *
-     * @param  request object with the message and subject details
-     * @return json success/error status
-     */
-    public function submitAnnouncement(Request $request)
-    {
-        $route = Route::current();
-        $source = $route->getName();
-       
-     // validate the request
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'announcement' => 'required|string',
-        ]);
-     // If validation fails return json error
-        if ($validator->fails()) {
-            return response()->json(['error'=>'The title or your message is missing.'], $this->errorStatus);            
-        }
-        
-     // Check the source specified in the API call is a valid one
-        $sourceId = DB::table('sources')->where('sourcename', $source)->value('id');
-        if ($sourceId){
-        // Insert the new announcement
-            $input = $request->all();
-            $rowid  = DB::table('announcements')->insertGetId([
-                'created_at' => date("Y-m-d H:i:s"), 
-                'source' => $sourceId, 
-                'title' => $input['title'], 
-                'content' => $input['announcement'],
-                'visible' => 'Y'
-            ]);
-         // Return a success response
-            return response()->json(['success'=>'Announcement has been posted. ' . $source ], $this->successStatus);   
-        }
-        
-     // Source specified in the API call does not match a source in the sources table 
-        return response()->json(['error'=>'Incorrect publisher specified.'], $this->errorStatus);
- 
-    }    
-    
     /**
      * Announcement api
      *
@@ -148,6 +105,108 @@ class AnnouncementController extends Controller
         return response()->json(['success'=>$announcements], $this->successStatus);
     }
 
+    /**
+     * 
+     *
+     * @param  request object with the message and subject details
+     * @return json success/error status
+     */
+    public function submitAnnouncement(Request $request)
+    {
+        $route = Route::current();
+        $source = $route->getName();
+       
+     // validate the request
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'announcement' => 'required_without:content|string',
+            'content' => 'required_without:announcement|string',
+            'visible' => 'in:Y,N'
+        ]);
+     // If validation fails return json error
+        if ($validator->fails()) {
+            return response()->json(['error'=>'The title or your message is missing.'], $this->errorStatus);            
+        }
+        
+     // Check the source specified in the API call is a valid one
+        //$sourceId = DB::table('sources')->where('sourcename', $source)->value('id');
+        
+        // Check record existence
+        try
+        {
+            $sourceId = Source::where('sourcename', $source)->FirstOrFail()->value('id');
+        }
+        catch(ModelNotFoundException $e)
+        {
+         // Source specified in the API call does not match a source in the sources table 
+            return response()->json(['error'=>'Incorrect publisher specified.'], $this->errorStatus);
+            //return response()->json(['id'=>$sourceId], $this->errorNotFound);
+        }
+        
+        try {
+         // Insert the new announcement
+            $announcement = new Announcement;
+            
+            $announcement->source = $sourceId;
+            $announcement->title = $request->title;
+
+            if ($request->announcement) $announcement->content = $request->announcement;
+            if ($request->content) $announcement->content = $request->content;
+
+            if ($request->visible) {
+                $announcement->visible = $request->visible; 
+            }
+            else {
+                $announcement->visible = 'Y';
+            }
+            
+            $announcement->save();
+        }
+        catch(\Exception $e)
+        {
+             return response()->json(['id'=>$sourceId], $this->errorStatus);
+        }
+                    
+         // Return a success response
+        return response()->json(['success'=>'Announcement has been posted. ' . $source ], $this->successStatus);          
+    }   
+    
+    
+    
+     // Source specified in the API call does not match a source in the sources table 
+        //return response()->json(['error'=>'Incorrect publisher specified.'], $this->errorStatus);
+        
+        
+        /*        if ($sourceId){
+        // Insert the new announcement
+            $input = $request->all();
+            $rowid  = DB::table('announcements')->insertGetId([
+                'created_at' => date("Y-m-d H:i:s"), 
+                'source' => $sourceId, 
+                'title' => $input['title'], 
+                'content' => $input['announcement'],
+                'visible' => 'Y'
+            ]);
+         // Return a success response
+            return response()->json(['success'=>'Announcement has been posted. ' . $source ], $this->successStatus);   
+        }
+
+        */
+   
+ 
+  
+    
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+    }    
+    
     /**
      * Update the specified resource in storage.
      *

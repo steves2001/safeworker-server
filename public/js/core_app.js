@@ -705,8 +705,15 @@ function setupTinyMCE(){
         e.stopImmediatePropagation();
       }
     });
+
     tinymce.init({
-       selector: 'textarea.mce-editor',
+       selector: '#addAnnouncementContent',
+        menubar: false,
+        toolbar: "bold alignleft aligncenter alignright alignjustify removeformat formatselect bullist numlist outdent, indent undo redo"
+    });
+    
+    tinymce.init({
+       selector: '#updateAnnouncementContent',
         menubar: false,
         toolbar: "bold alignleft aligncenter alignright alignjustify removeformat formatselect bullist numlist outdent, indent undo redo"
     });
@@ -774,8 +781,10 @@ function ajaxAddAnnouncement(e, announcementFormName) {
         type: 'POST',
         data: formData,
         success: function(data) {
+            $('#addAnnouncementModal').modal('hide');
             toastr["success"](data.success);
             console.log(data);
+            
         }, // End of success
         error: function(data) {
             toastr["error"](data.responseJSON["error"]);
@@ -812,9 +821,7 @@ function updateAnnouncementModal(id, sourceid, title, content){
      $("#updateAnnouncementId").val( id );
      $("#updateAnnouncementSourceId").val( sourceid );
      $("#updateAnnouncementTitle").val( title );
-     $("#updateAnnouncementContent").val( '' );
-     tinyMCE.activeEditor.setContent('');
-     tinymce.activeEditor.setContent(decodeURIComponent(content));
+     tinyMCE.get('updateAnnouncementContent').setContent( decodeURIComponent(content) );    
 }
 // End update user modal
 // ---------------------------------------------------------------------------
