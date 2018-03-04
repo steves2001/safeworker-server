@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::get('/admin', 'AdminController');
+Route::get('/security', 'SecurityController');
+

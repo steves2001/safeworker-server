@@ -18,7 +18,7 @@
     <!-- Text Editor -->
     
     <!-- Custom styles -->
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/admin_style.css" rel="stylesheet">
 
 </head>
 
@@ -298,7 +298,7 @@
     <!-- text editor -->
     <script src='js/tinymce/tinymce.min.js'></script>
     <!-- PWA Scripts -->
-    <script type="text/javascript" src="js/core_app.js" async></script>
+    <script type="text/javascript" src="js/admin_app.js" async></script>
     <!-- Custom font awesome icons for bootstrap table -->
     <script>
     window.icons = {
