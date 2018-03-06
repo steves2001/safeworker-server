@@ -452,6 +452,7 @@ function ajaxCancelLoneWorking() {
 // Login/Registration/Password Related code
 // ---------------------------------------------------------------------------
 // Login User
+
 function loginSuccess() {
     setDisplay('#loginSection', 'off', 'd-block');
     setDisplay('#changePasswordButton', 'on', 'd-block');
@@ -461,7 +462,6 @@ function loginSuccess() {
     checkLoneWorking();
     retrieveAnnouncements(e, 'Announce-3');    
 }
-
 // End Login User
 // ---------------------------------------------------------------------------
 // Logout code
