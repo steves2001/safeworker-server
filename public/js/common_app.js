@@ -28,6 +28,42 @@ function ajaxLogin(e, loginFormName) {
 }
 // End Login User
 // ---------------------------------------------------------------------------
+// Register User
+
+function ajaxRegister(e, registerFormName) {
+    var formData = $(registerFormName).serialize();
+    console.log(formData);
+    $.ajax({
+        url: api + 'register',
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            //setDisplay('#registerSection', 'off', 'd-block');
+            displayForm('loginSection');
+            toastr["success"](data.success);
+        }, // End of success
+        error: function(data) {
+            console.log("Register Failed Response Data");
+            console.log(data.responseText);
+            var obj = jQuery.parseJSON(data.responseText);
+            if(obj.error.name) {
+                toastr["warning"](obj.error.name);
+            }
+            if(obj.error.email) {
+                toastr["warning"](obj.error.email);
+            }
+            if(obj.error.password) {
+                toastr["warning"](obj.error.password);
+            }
+            if(obj.error.c_password) {
+                toastr["warning"]("Passwords do not match");
+            }
+            toastr["error"]("Registration Failed");
+        } // End error
+    }); // End ajax
+}
+// End register user
+// ---------------------------------------------------------------------------
 // Change Password
 
 function ajaxChangePassword(e, passwordFormName) {

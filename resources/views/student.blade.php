@@ -80,7 +80,8 @@
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
     <!-- PWA Scripts -->
-    <script type="text/javascript" src="js/student_app.js"></script>
+    <script type="text/javascript" src="js/common_app.js"></script>
+    <script type="text/javascript" src="js/student_app.js" defer></script>
 </body>
 
 </html>
