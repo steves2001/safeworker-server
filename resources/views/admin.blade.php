@@ -298,7 +298,8 @@
     <!-- text editor -->
     <script src='js/tinymce/tinymce.min.js'></script>
     <!-- PWA Scripts -->
-    <script type="text/javascript" src="js/admin_app.js" async></script>
+    <script type="text/javascript" src="js/common_app.js"></script>
+    <script type="text/javascript" src="js/admin_app.js" defer></script>
     <!-- Custom font awesome icons for bootstrap table -->
     <script>
     window.icons = {

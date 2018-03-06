@@ -13,6 +13,7 @@
         "Box URL": "http://{{domain3000}}/",
         "Box URL SSL": "https://{{domain3000}}/",
         "Admin URL SSL": "https://{{domain3000}}/admin",
-        "Security URL SSL": "https://{{domain3000}}/security"
+        "Security URL SSL": "https://{{domain3000}}/security",
+        "Student URL SSL": "https://{{domain3000}}/student"
   }
 }

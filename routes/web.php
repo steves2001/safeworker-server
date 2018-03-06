@@ -17,4 +17,5 @@ Route::get('/', function () {
 
 Route::get('/admin', 'AdminController');
 Route::get('/security', 'SecurityController');
+Route::get('/student', 'StudentController');
 

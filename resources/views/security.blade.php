@@ -26,7 +26,7 @@
     <!-- Start of project here-->
     <div class="container-fluid">
         
-@include('forms.login')
+@include('forms.loginsecurity')
 @include('forms.changepassword')            
 
         <!--Security Card Template-->
@@ -162,7 +162,8 @@
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
     <!-- PWA Scripts -->
-    <script type="text/javascript" src="js/security_app.js" async></script>
+    <script type="text/javascript" src="js/common_app.js"></script>
+    <script type="text/javascript" src="js/security_app.js" defer></script>
 </body>
 
 </html>
