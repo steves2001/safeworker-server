@@ -20,7 +20,8 @@ Route::get('register/confirm/{validationToken?}', 'API\UserController@confirmReg
 Route::post('password/reset', 'API\PasswordController@resetPassword');
 Route::get('password/confirm/{confirmationToken?}', 'API\PasswordController@confirmReset');
 
-
+Route::get('activities', 'API\ActivityController@index');
+Route::post('activities/chart/activity', 'API\ActivityController@chartActivity');
 
 Route::group(['middleware' => 'auth:api'], function(){
     // Basic logged in user routes

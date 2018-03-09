@@ -122,7 +122,9 @@ function setupNavigationMenu(){
     
     $("#manageLogs").click(function(e) {        
     }); // End   
-    $("#reviewLogs").click(function(e) {        
+    $("#reviewLogs").click(function(e) { 
+        displaySingleSection('logChartSection');
+        ajaxGetActivityData();
     }); // End   
 }
 // End setup Navigation
@@ -750,6 +752,117 @@ function updateAnnouncementVisibility(announcementId){
 }
 // ---------------------------------------------------------------------------
 // End announcement administration methods
+// ---------------------------------------------------------------------------
+// Start log administration methods
+// ---------------------------------------------------------------------------
+// Start display chart
+function ajaxGetActivityData(){
+    searchParameters = {
+        start: '2017-09-01',
+        end: '2018-09-01',
+        grouping: '%y-%m'
+    }
+    
+    $.ajax({
+        url: api + 'activities/chart/activity',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + getAPIToken()
+        },
+        type: 'POST',
+        data: searchParameters,
+        success: function(data) {
+            displayLogsAsChart(data);
+            
+            console.log(data);
+            
+        }, // End of success
+        error: function(data) {
+            toastr["error"](data.responseJSON["error"]);
+        } // End error
+    }); // End ajax
+
+}
+
+function displayLogsAsChart(ajaxData){
+  /*  var ajaxData = [{label:"17-12",Location:"Deans Building",data:2},
+            {label:"17-12",Location:"HE Study Room",data:9},
+            {label:"18-01",Location:"College Library",data:8},
+            {label:"18-01",Location:"HE Study Room",data:20},
+            {label:"18-02",Location:"HE Study Room",data:1},
+            {label:"18-03",Location:"College Library",data:1},
+            {label:"18-03",Location:"HE Study Room",data:1}];
+  */
+    var labels = [];
+    var data = [];
+    var headings = [];
+    var series = [];
+    var dataSets = [];
+    var colours = ['0,0,220','220,0,220', '0,220,0','220,0,0','0,220,220','220,220,0','220,220,220'];
+    for (let chartPoint of ajaxData){
+        if(headings.indexOf(chartPoint.label) == -1){
+            headings.push(chartPoint.label);
+        }
+        if(series.indexOf(chartPoint.Location) == -1){
+            series.push(chartPoint.Location);
+            labels[chartPoint.Location] = [];
+            data[chartPoint.Location] = [];
+        }
+        labels[chartPoint.Location].push(chartPoint.label);
+        data[chartPoint.Location].push(chartPoint.data);
+    }
+    var colourCounter = 0;
+    for (let currentSeries of series){
+        let rowData = [];
+        for (let heading of headings){
+            if(labels[currentSeries].indexOf(heading) == -1){
+                rowData.push(0);
+            }
+            else {
+                rowData.push(data[currentSeries][labels[currentSeries].indexOf(heading)]);
+            }
+        }
+        
+        colourIndex = colourCounter % colours.length;
+        
+        dataSets.push({
+            label: currentSeries,
+            fillColor: "rgba(" + colours[colourCounter % colours.length] + ",0.2)",
+            strokeColor: "rgba(" + colours[colourCounter % colours.length] + ",1)",
+            pointColor: "rgba(" + colours[colourCounter % colours.length] + ",1)",
+            pointStrokeColor: "#fff",
+            backgroundColor : "rgba(" + colours[colourCounter % colours.length] + ",0.2)",
+            borderWidth : 2,
+            borderColor : "rgba(" + colours[colourCounter % colours.length] + ",1)",
+            pointBackgroundColor : "rgba(" + colours[colourCounter % colours.length] + ",1)",
+            pointBorderColor : "#fff",
+            pointBorderWidth : 1,
+            pointRadius : 4,
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(" + colours[colourCounter % colours.length] + ",1)",
+            pointHoverBackgroundColor : "#fff",
+            pointHoverBorderColor :"rgba(" + colours[colourCounter % colours.length] + ",1)",
+            data: rowData
+        });
+        colourCounter++;
+    }
+
+    var ctxL = document.getElementById("lineChart").getContext('2d');
+    var myLineChart = new Chart(ctxL, {
+        type: 'line',
+        data: {
+            labels: headings,
+            datasets: dataSets
+        },
+        options: {
+            responsive: true
+        }    
+    });    
+    
+}
+// End display chart
+// ---------------------------------------------------------------------------
+// End log administration methods
 // ---------------------------------------------------------------------------
 // Set up  the actions on the menus and forms
 (function() {

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Validator;
+use Illuminate\Validation\Rule;
 use App\User;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +21,43 @@ class ActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //return response()->json(Activity::select(DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '%y-%m')"))->get());
+
+        return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '%y-%m') as label"), "Location", DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '%y-%m')"), "Location")->get());
+        
+        
+        return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '%y-%m') as label"), DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '%y-%m')"))->get());
+    }
+    /**
+     * Send filtered chart data for activity
+     * 
+     */
+    
+    public function chartActivity(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'start' => 'required_with:end|date|date_format:Y-m-d|before:end',
+            'end' => 'required_with:start|date|date_format:Y-m-d|after:start',
+            'grouping' => ['required','string', Rule::in(['%y-%m', '%y-%W'])]
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
+        }  
+        
+        return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "') as label"), "Location", DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "')"), "Location")->get());
+    }
+    
+    
     
     // Logs the lone working activity (Student)
     public function logActivity(Request $request)

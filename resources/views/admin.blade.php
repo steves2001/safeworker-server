@@ -275,7 +275,16 @@
                 <thead class="mdb-color lighten-4"><tr></tr></thead>
             </table>
             </div>                         
-        </section>        
+        </section>
+        <section id="logChartSection" class="card d-none">
+            <div class="header">
+                <h2>Remote Working Activity</h2>
+            </div>
+            <div class="card-body">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </section>
+    
         <!--End of screen gap start -->
         <div>
             <p>&nbsp;</p>
