@@ -756,11 +756,11 @@ function updateAnnouncementVisibility(announcementId){
 // Start log administration methods
 // ---------------------------------------------------------------------------
 // Start display chart
-function ajaxGetActivityData(){
+function ajaxGetActivityData(startDate = '2017-09-01', endDate = '2018-09-01', groupBy = '%y-%v'){
     searchParameters = {
-        start: '2017-09-01',
-        end: '2018-09-01',
-        grouping: '%y-%m'
+        start: startDate,
+        end: endDate,
+        grouping: groupBy
     }
     
     $.ajax({
@@ -785,14 +785,7 @@ function ajaxGetActivityData(){
 }
 
 function displayLogsAsChart(ajaxData){
-  /*  var ajaxData = [{label:"17-12",Location:"Deans Building",data:2},
-            {label:"17-12",Location:"HE Study Room",data:9},
-            {label:"18-01",Location:"College Library",data:8},
-            {label:"18-01",Location:"HE Study Room",data:20},
-            {label:"18-02",Location:"HE Study Room",data:1},
-            {label:"18-03",Location:"College Library",data:1},
-            {label:"18-03",Location:"HE Study Room",data:1}];
-  */
+
     var labels = [];
     var data = [];
     var headings = [];
@@ -861,6 +854,45 @@ function displayLogsAsChart(ajaxData){
     
 }
 // End display chart
+function setupLogHistoryChart(){
+    
+$("#updateLogHistoryChartButton").click(function(e) {
+    
+    // Test for correct date format
+    let datePattern = new RegExp("^[0-9]{2}-[0-9]{2}-[0-9]{4}", "i");
+    
+    if( datePattern.test($('#chartStarts').val()) &&  datePattern.test($('#chartEnds').val())) {
+        
+        // Check for same start end date
+        if ($('#chartStarts').val() === $('#chartEnds').val()) {
+            toastr["error"]('Start and end dates must be different');
+            return;
+        }
+        
+        let startDate = $('#chartStarts').val();
+        let endDate   = $('#chartEnds').val();
+        let groupBy   = $("input:radio[name ='weekMonth']:checked").val();
+        
+        // Swap date order dd-mm-yyyy to yyyy-mm-dd for query
+        
+        startDate = startDate.substring(6) + startDate.substring(2,6) + startDate.substring(0,2);
+        endDate   = endDate.substring(6) + endDate.substring(2,6) + endDate.substring(0,2);
+        
+        // call the chart 
+        ajaxGetActivityData(startDate, endDate, groupBy);
+    }
+    else
+        toastr["error"]('Please specify both start and end dates');
+});
+    
+$('#chartdatepicker').datepicker({
+    format: "dd-mm-yyyy",
+    startDate: "-5y",
+    endDate: new Date(),
+    todayHighlight: true
+});
+
+}
 // ---------------------------------------------------------------------------
 // End log administration methods
 // ---------------------------------------------------------------------------
@@ -895,7 +927,7 @@ function displayLogsAsChart(ajaxData){
     setupTinyMCE();
     setupAddAnnouncementModal();
     setupUpdateAnnouncementModalForm();
-    
+    setupLogHistoryChart();
 })();
 // End setup actions on menus and forms
 // ---------------------------------------------------------------------------

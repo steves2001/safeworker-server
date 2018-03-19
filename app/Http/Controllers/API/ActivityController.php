@@ -10,6 +10,7 @@ use Validator;
 use Illuminate\Validation\Rule;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ActivityController extends Controller
 {
@@ -47,14 +48,15 @@ class ActivityController extends Controller
         $validator = Validator::make($request->all(), [
             'start' => 'required_with:end|date|date_format:Y-m-d|before:end',
             'end' => 'required_with:start|date|date_format:Y-m-d|after:start',
-            'grouping' => ['required','string', Rule::in(['%y-%m', '%y-%W'])]
+            'grouping' => ['required','string', Rule::in(['%y-%m', '%y-%v'])]
         ]);
 
         if ($validator->fails()) {
             return response()->json(['req'=>$request->all(), 'error'=>$validator->errors()], 401);            
         }  
+        // return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "') as label"), "Location", DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "')"), "Location")->get());
         
-        return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "') as label"), "Location", DB::raw("COUNT(*) as data"))->groupBy(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "')"), "Location")->get());
+        return response()->json(Activity::select(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "') as label"), "Location", DB::raw("COUNT(*) as data"))->whereBetween('created_at',[$request->start, $request->end])->groupBy(DB::raw("DATE_FORMAT(created_at, '" . $request->grouping . "')"), "Location")->get());
     }
     
     

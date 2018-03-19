@@ -15,6 +15,7 @@
     <!-- Material Design Bootstrap -->
     <link href="css/mdb.min.css" rel="stylesheet">
     <link href="css/bootstrap-table.css" rel="stylesheet">
+    <link href='css/bootstrap-datepicker.min.css' rel='stylesheet'>
     <!-- Text Editor -->
     
     <!-- Custom styles -->
@@ -276,12 +277,23 @@
             </table>
             </div>                         
         </section>
-        <section id="logChartSection" class="card d-none">
+        <section id="logChartSection" class="card col-md-6 d-none">
             <div class="header">
                 <h2>Remote Working Activity</h2>
             </div>
             <div class="card-body">
                 <canvas id="lineChart"></canvas>
+                <div class="input-daterange input-group datePickFormat" id="chartdatepicker">
+                    <label for="chartStarts">Date from</label>
+                    <input id="chartStarts" type="text" name="start" />
+                    <label for="chartEnds">Date to</label>
+                    <input id="chartEnds" type="text" name="end" />
+                    <input class="form-check-input" type="radio" name="weekMonth" id="wmWeek" value="%y-%v" checked>
+                    <label class="form-check-label" for="wmWeek">Weekly</label>
+                    <input class="form-check-input" type="radio" name="weekMonth" id="wmMonth" value="%y-%m">
+                    <label class="form-check-label" for="wmMonth">Monthly</label>
+                    <button id="updateLogHistoryChartButton" type="button" name="submit" class="btn btn-sm btn-primary">Update</button>
+                </div>  
             </div>
         </section>
     
@@ -302,6 +314,8 @@
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-table.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
+    
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
     <!-- text editor -->
