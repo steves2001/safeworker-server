@@ -277,13 +277,15 @@
             </table>
             </div>                         
         </section>
-        <section id="logChartSection" class="card col-md-6 d-none">
-            <div class="header">
-                <h2>Remote Working Activity</h2>
+        <section id="logChartSection" class="card col-md-6 d-none" >
+            <div class="header text-center py-3">
+                <h2 class="h3-responsive">Remote Working Activity Log</h2>
             </div>
-            <div class="card-body">
-                <canvas id="lineChart"></canvas>
-                <div class="input-daterange input-group datePickFormat" id="chartdatepicker">
+            <div class="card-body text-center">
+                <div id="activityChart">
+                <canvas id="lineChart"></canvas>                    
+                </div>
+                <div class="input-daterange datePickFormat" id="chartdatepicker">
                     <label for="chartStarts">Date from</label>
                     <input id="chartStarts" type="text" name="start" />
                     <label for="chartEnds">Date to</label>
@@ -292,8 +294,10 @@
                     <label class="form-check-label" for="wmWeek">Weekly</label>
                     <input class="form-check-input" type="radio" name="weekMonth" id="wmMonth" value="%y-%m">
                     <label class="form-check-label" for="wmMonth">Monthly</label>
-                    <button id="updateLogHistoryChartButton" type="button" name="submit" class="btn btn-sm btn-primary">Update</button>
-                </div>  
+                </div>
+                <div class="text-center mt-2">
+                    <button id="updateLogHistoryChartButton" type="button" name="submit" class="btn btn-sm btn-primary">Update</button>                    
+                </div>
             </div>
         </section>
     

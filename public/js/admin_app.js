@@ -756,7 +756,15 @@ function updateAnnouncementVisibility(announcementId){
 // Start log administration methods
 // ---------------------------------------------------------------------------
 // Start display chart
-function ajaxGetActivityData(startDate = '2017-09-01', endDate = '2018-09-01', groupBy = '%y-%v'){
+function stringPad (number){
+    return (number < 10 ? '0' : '') + number    
+}
+function ajaxGetActivityData(startDate = '', endDate = '', groupBy = '%y-%v'){
+    if (startDate=='' || endDate==''){
+        let currentDate = new Date();
+        startDate = (currentDate.getFullYear() - 1) + '-' + stringPad(currentDate.getMonth() + 1) + '-' + stringPad(currentDate.getDate());
+        endDate = currentDate.getFullYear()  + '-' + stringPad(currentDate.getMonth() + 1) + '-' + stringPad(currentDate.getDate());
+    }
     searchParameters = {
         start: startDate,
         end: endDate,
@@ -772,9 +780,10 @@ function ajaxGetActivityData(startDate = '2017-09-01', endDate = '2018-09-01', g
         type: 'POST',
         data: searchParameters,
         success: function(data) {
-            displayLogsAsChart(data);
+            displayLogsAsChart(data, searchParameters.grouping);
             
-            console.log(data);
+            //console.log(data);
+            //console.log(searchParameters.grouping);
             
         }, // End of success
         error: function(data) {
@@ -784,37 +793,77 @@ function ajaxGetActivityData(startDate = '2017-09-01', endDate = '2018-09-01', g
 
 }
 
-function displayLogsAsChart(ajaxData){
+function displayLogsAsChart(ajaxData, grouping){
 
+    var limit = 12;
+    if (grouping === '%y-%v') limit = 52; 
+    $('#lineChart').remove(); // Clear <canvas> element
+    $('#activityChart').append('<canvas id="lineChart"><canvas>');
+    var ctxL = document.getElementById("lineChart").getContext('2d');
+    
     var labels = [];
     var data = [];
     var headings = [];
+    var expandedHeadings = [];
     var series = [];
     var dataSets = [];
+    
     var colours = ['0,0,220','220,0,220', '0,220,0','220,0,0','0,220,220','220,220,0','220,220,220'];
+    var colourCounter = 0;
+    
     for (let chartPoint of ajaxData){
+        // If the current data point is not in the heading array add it
         if(headings.indexOf(chartPoint.label) == -1){
             headings.push(chartPoint.label);
         }
+    }    
+    
+    
+    if(headings.length <= 1){
+        toastr["error"]('No data to display');
+        return
+    }
+    
+    // Establish start year 
+    var yearStart = headings[0].substring(0,2);
+    var weekMonthStart = headings[0].substring(3,5);
+    var yearEnd = headings[headings.length - 1].substring(0,2);
+    var weekMonthEnd = headings[headings.length - 1].substring(3,5);
+    var intervalStart = weekMonthStart;    
+    
+    // Build a sequence of headings from earliest found 
+    // data to the last logged date
+    for(year = yearStart; year <= yearEnd; year++){
+        if (year == yearEnd) limit = weekMonthEnd;
+        for(interval = intervalStart; interval <= limit; interval++) {
+            //console.log(stringPad(year) + '-' + stringPad(interval));
+            expandedHeadings.push(stringPad(year) + '-' + stringPad(interval));
+        }
+        intervalStart = 1;
+    }    
+    
+    // extract the data into separate series with data allocated to the
+    // correct label
+    for (let chartPoint of ajaxData){
+
+        // If the location is not listed in the series array add it
+        // and create a new label and data arrays
         if(series.indexOf(chartPoint.Location) == -1){
             series.push(chartPoint.Location);
-            labels[chartPoint.Location] = [];
-            data[chartPoint.Location] = [];
+            labels[chartPoint.Location] = expandedHeadings;
+            data[chartPoint.Location] = new Array(expandedHeadings.length);
+            for(index = 0; index < data[chartPoint.Location].length; index++)
+                data[chartPoint.Location][index] = 0;
         }
-        labels[chartPoint.Location].push(chartPoint.label);
-        data[chartPoint.Location].push(chartPoint.data);
+        
+        // Add the data to the correct series in the correct array element
+        data[chartPoint.Location][expandedHeadings.indexOf(chartPoint.label)] = chartPoint.data;
     }
-    var colourCounter = 0;
+    
+    //console.log(ajaxData); console.log(data);
+    
+    // Build chart data series by series
     for (let currentSeries of series){
-        let rowData = [];
-        for (let heading of headings){
-            if(labels[currentSeries].indexOf(heading) == -1){
-                rowData.push(0);
-            }
-            else {
-                rowData.push(data[currentSeries][labels[currentSeries].indexOf(heading)]);
-            }
-        }
         
         colourIndex = colourCounter % colours.length;
         
@@ -835,62 +884,68 @@ function displayLogsAsChart(ajaxData){
             pointHighlightStroke: "rgba(" + colours[colourCounter % colours.length] + ",1)",
             pointHoverBackgroundColor : "#fff",
             pointHoverBorderColor :"rgba(" + colours[colourCounter % colours.length] + ",1)",
-            data: rowData
+            data: data[currentSeries]
         });
         colourCounter++;
     }
 
-    var ctxL = document.getElementById("lineChart").getContext('2d');
+    // Construct Chart
     var myLineChart = new Chart(ctxL, {
         type: 'line',
         data: {
-            labels: headings,
+            labels: expandedHeadings,
             datasets: dataSets
         },
         options: {
             responsive: true
         }    
-    });    
-    
+    });      
 }
 // End display chart
+
 function setupLogHistoryChart(){
     
-$("#updateLogHistoryChartButton").click(function(e) {
+    $("#updateLogHistoryChartButton").click(function(e) {
     
     // Test for correct date format
-    let datePattern = new RegExp("^[0-9]{2}-[0-9]{2}-[0-9]{4}", "i");
+        let datePattern = new RegExp("^[0-9]{2}-[0-9]{2}-[0-9]{4}", "i");
     
-    if( datePattern.test($('#chartStarts').val()) &&  datePattern.test($('#chartEnds').val())) {
-        
-        // Check for same start end date
-        if ($('#chartStarts').val() === $('#chartEnds').val()) {
-            toastr["error"]('Start and end dates must be different');
-            return;
+        if( datePattern.test($('#chartStarts').val()) &&  datePattern.test($('#chartEnds').val())) {
+
+            // Check for same start end date
+            if ($('#chartStarts').val() === $('#chartEnds').val()) {
+                toastr["error"]('Start and end dates must be different');
+                return;
+            }
+
+            let startDate = $('#chartStarts').val();
+            let endDate   = $('#chartEnds').val();
+            let groupBy   = $("input:radio[name ='weekMonth']:checked").val();
+
+            // Swap date order dd-mm-yyyy to yyyy-mm-dd for query
+
+            startDate = startDate.substring(6) + startDate.substring(2,6) + startDate.substring(0,2);
+            endDate   = endDate.substring(6) + endDate.substring(2,6) + endDate.substring(0,2);
+
+            // call the chart 
+            ajaxGetActivityData(startDate, endDate, groupBy);
         }
-        
-        let startDate = $('#chartStarts').val();
-        let endDate   = $('#chartEnds').val();
-        let groupBy   = $("input:radio[name ='weekMonth']:checked").val();
-        
-        // Swap date order dd-mm-yyyy to yyyy-mm-dd for query
-        
-        startDate = startDate.substring(6) + startDate.substring(2,6) + startDate.substring(0,2);
-        endDate   = endDate.substring(6) + endDate.substring(2,6) + endDate.substring(0,2);
-        
-        // call the chart 
-        ajaxGetActivityData(startDate, endDate, groupBy);
-    }
-    else
-        toastr["error"]('Please specify both start and end dates');
-});
+        else
+            toastr["error"]('Please specify both start and end dates');
+    });
     
-$('#chartdatepicker').datepicker({
-    format: "dd-mm-yyyy",
-    startDate: "-5y",
-    endDate: new Date(),
-    todayHighlight: true
-});
+    let currentDate = new Date();
+    let startDate = stringPad(currentDate.getDate()) + '-' + stringPad(currentDate.getMonth() + 1) + '-' + (currentDate.getFullYear() - 1);
+    let endDate = stringPad(currentDate.getDate()) + '-' + stringPad(currentDate.getMonth() + 1) + '-' + currentDate.getFullYear();
+
+    $('#chartStarts').val(startDate);
+    $('#chartEnds').val(endDate);
+    $('#chartdatepicker').datepicker({
+        format: "dd-mm-yyyy",
+        startDate: "-5y",
+        endDate: new Date(),
+        todayHighlight: true
+    });
 
 }
 // ---------------------------------------------------------------------------
