@@ -37,7 +37,7 @@
                                     <p>Enter your college email address to start the password recovery process, you will be emailed a new password.</p>
                                     <div class="text-center mb-4">
                                         <button id="recoverButton" type="button" class="btn btn-primary-custom btn-block z-depth-2" data-target=".multi-collapse" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="loginReveal1 recoverPassword loginReveal2">Recover Password</button>
-                                        <button id="recoverCancelButton" type="button" class="btn btn-secondry-custom btn-block z-depth-2" data-target=".multi-collapse" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="loginReveal1 recoverPassword loginReveal2">Cancel</button>
+                                        <button id="recoverCancelButton" type="button" class="btn btn-secondary-custom btn-block z-depth-2" data-target=".multi-collapse" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="loginReveal1 recoverPassword loginReveal2">Cancel</button>
                                     </div>
                                 </div>
                                 <div id="loginReveal2" class="collapse show multi-collapse" aria-expanded="true">

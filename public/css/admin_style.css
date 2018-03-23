@@ -194,6 +194,12 @@
 
 .form-col-pad { padding: 0px 0px 0px 0px;}
 textarea.md-textarea.fourline  { height: 6.3rem;}
+/* This prevents the stupid MD Bootstrap label animation */
+.md-form label {
+      -webkit-transform: translateY(-140%);
+      -ms-transform: translateY(-140%);
+      transform: translateY(-140%); font-size: 0.8rem; }
+
 /* End Login and Registration Form */ 
 
 

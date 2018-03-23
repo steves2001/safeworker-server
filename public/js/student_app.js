@@ -153,7 +153,7 @@ function getSecurityStatus() {
 // ---------------------------------------------------------------------------
 // Retrieve announcements - retrieves announcements from server
 
-function retrieveAnnouncements(e, sourceId, nextPage = 1) {
+function retrieveAnnouncements(sourceId, nextPage = 1) {
     console.log('Calling announcement');
     $('#more-information').prop('value', sourceId + '#');
     $.ajax({
@@ -460,7 +460,7 @@ function loginSuccess() {
     setDisplay('#navBurger', 'on', 'd-block');
     setDisplay('#timerButton', 'on', 'd-block');
     checkLoneWorking();
-    retrieveAnnouncements(e, 'Announce-3');    
+    retrieveAnnouncements('Announce-3');    
 }
 // End Login User
 // ---------------------------------------------------------------------------
@@ -571,13 +571,13 @@ function displayForm(sectionId = 'none'){
     checkLoneWorking();
     // Set up AJAX call to retrieve the announcement data from the server
     $('[id^=Announce-]').click(function(e) {
-        retrieveAnnouncements(e, this.id);
+        retrieveAnnouncements(this.id);
     });
     $('#more-information').click(function(e) {
         var value = $(this).prop("value")
         var id = value.substr(0, value.indexOf('#'));
         var page = value.substr(value.indexOf('#') + 1, value.length);
-        retrieveAnnouncements(e, id, page);
+        retrieveAnnouncements(id, page);
     });
     // End announcement
     setupLoneWorkingForm();
