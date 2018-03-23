@@ -120,16 +120,15 @@
                                 <!--/Announcement title -->
                                 <hr>
                                 <!-- Announcement text -->
-                                <div>
+                                <div class="md-form mb-5">
                                     <label for="announcement">Enter announcement</label>
-                                    <textarea type="text" id="announcement" name="content" maxlength="500" length="500" class="pt-0 pb-0 md-textarea fourline"></textarea>
+                                    <textarea type="text" id="announcement" name="content" maxlength="500" length="500" class="pt-0 pb-0 md-textarea form-control" rows="4"></textarea>
                                 </div>
                                 <!--/Announcement text -->
-                                <hr>
                                 <!-- Form buttons -->
                                 <div class="text-center mb-4">
-                                    <button type="submit" class="btn btn-mdb btn-block z-depth-2">Post Announcement</button>
-                                    <button id="cancelPostAnnouncement" type="button" class="btn btn-danger btn-block z-depth-2">Cancel</button>
+                                    <button type="submit" class="btn btn-primary-custom btn-block z-depth-2">Post Announcement</button>
+                                    <button id="cancelPostAnnouncement" type="button" class="btn btn-secondary-custom btn-block z-depth-2">Cancel</button>
                                 </div>
                                 <!--/Form buttons -->
                             </form>

@@ -17,7 +17,7 @@
                                 <div id="select-contact" class="dropdown">
                                     <label for="dropdownDestination">Reason for Contact</label>
                                     <!--Trigger-->
-                                    <button class="btn btn-mdb waves-effect btn-block dropdown-toggle" type="button" id="dropdownDestination" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="Unknown">Unknown</button>
+                                    <button class="btn btn-primary-custom waves-effect btn-block dropdown-toggle" type="button" id="dropdownDestination" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="Unknown">Unknown</button>
                                     <!--Menu-->
                                     <div class="dropdown-menu dropdown-ins" style="width:100%">
                                         <a class="dropdown-item" href="#">Safeguarding</a>
@@ -32,14 +32,14 @@
                                 <!-- Enquiry message -->
                                 <div>
                                     <label for="contactMessage">Enter enquiry details</label>
-                                    <textarea type="text" id="contactMessage" maxlength="500" length="500" class="pt-0 pb-0 md-textarea fourline"></textarea>
+                                    <textarea type="text" id="contactMessage" maxlength="500" length="500" class="pt-0 pb-0 md-textarea form-control fourline"></textarea>
                                 </div>
                                 <!--/Enquiry message -->
                                 <hr>
                                 <!-- Form buttons -->
                                 <div class="text-center mb-4">
-                                    <button type="submit" class="btn btn-mdb btn-block z-depth-2">Send Request</button>
-                                    <button id="cancelSupportRequest" type="button" class="btn btn-danger btn-block z-depth-2">Cancel</button>
+                                    <button type="submit" class="btn btn-primary-custom btn-block z-depth-2">Send Request</button>
+                                    <button id="cancelSupportRequest" type="button" class="btn btn-secondary-custom btn-block z-depth-2">Cancel</button>
                                 </div>
                                 <!--/Form buttons -->
                             </form>

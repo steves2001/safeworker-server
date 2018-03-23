@@ -59,8 +59,8 @@
                             <label for="addAnnouncementContent" class="mt-3 mb-2 indigo-text">Announcement</label>
                             <textarea id="addAnnouncementContent" class="mce-editor" name="content"></textarea>
                             <div class="text-center mt-3 mb-1">
-                                <button type="submit" class="btn btn-primary-modal">Add</button>
-                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary-custom">Add</button>
+                                <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -96,8 +96,8 @@
                             <label for="updateAnnouncementContent" class="mt-3 mb-2 indigo-text">Announcement</label>
                             <textarea id="updateAnnouncementContent" class="mce-editor" name="content"></textarea>
                             <div class="text-center mt-3 mb-1">
-                                <button type="submit" class="btn btn-primary-modal">Update</button>
-                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary-custom">Update</button>
+                                <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -137,8 +137,8 @@
                                 <label for="userAddC_password">Confirm password</label>
                             </div>
                             <div class="text-center mt-2 mb-2">
-                                <button type="submit" class="btn btn-primary-modal">Add User</button>
-                                <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary-custom">Add User</button>
+                                <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancel</button>
                             </div>
                         </form>
                     </div>
@@ -170,7 +170,7 @@
                            </div>
                             @endforeach
                            <div class="text-center mt-2 mb-2">
-                                <button type="button" class="btn btn-primary-modal" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary-custom" data-dismiss="modal">Close</button>
                            </div>
                         </form>
                     </div>
@@ -206,8 +206,8 @@
                                     
                                 </div>
                                 <div class="text-center mb-4">
-                                    <button type="submit" class="btn btn-primary-modal">Update</button>
-                                    <button type="button" class="btn btn-outline-secondary-modal" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary-custom">Update</button>
+                                    <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -277,7 +277,11 @@
             </table>
             </div>                         
         </section>
-        <section id="logChartSection" class="card col-md-6 d-none" >
+        
+        <div  id="logSection" class="row justify-content-center p-3">
+            <section id="logChartSection" class="card col-lg-6 d-none">
+                
+
             <div class="header text-center py-3">
                 <h2 class="h3-responsive">Remote Working Activity Log</h2>
             </div>
@@ -296,10 +300,11 @@
                     <label class="form-check-label" for="wmMonth">Monthly</label>
                 </div>
                 <div class="text-center mt-2">
-                    <button id="updateLogHistoryChartButton" type="button" name="submit" class="btn btn-sm btn-primary">Update</button>                    
+                    <button id="updateLogHistoryChartButton" type="button" name="submit" class="btn btn-sm btn-primary-custom">Update</button>                    
                 </div>
             </div>
-        </section>
+            </section>
+        </div>
     
         <!--End of screen gap start -->
         <div>

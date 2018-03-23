@@ -60,8 +60,9 @@
                                 </div>
                                 <hr />
                                 <div>
+                                    
+                                    <textarea type="text" id="securityMessage" maxlength="250" length="250" class="pt-0 pb-0 md-textarea form-control" rows="4"></textarea>
                                     <label for="securityMessage">Enter message for security</label>
-                                    <textarea type="text" id="securityMessage" maxlength="250" length="250" class="pt-0 pb-0 md-textarea fourline"></textarea>
                                 </div>
 
 
@@ -82,10 +83,10 @@
                             <!--/Dropdown location -->
                             <hr />
 
-                            <button id="startButton" type="button" class="btn btn-mdb btn-block mb-1">Start</button>
+                            <button id="startButton" type="button" class="btn btn-primary-custom btn-block mb-1">Start</button>
                         </div>
                         <div id="cancelLoneWorking" class="d-none">
-                            <button id="stopButton" type="button" class="btn btn-danger btn-block mb-1">Confirm Cancel</button>
+                            <button id="stopButton" type="button" class="btn btn-secondary-custom btn-block mb-1">Confirm Cancel</button>
                         </div>
                     </div>
                 </div>

@@ -12,6 +12,11 @@
 
 /* End announcement Styles */
 
+/* Button Colours */
+
+.btn-primary-custom   { background-color: #1b5e20!important; color: #fff!important; }
+.btn-secondary-custom { background-color: #b71c1c!important; color: #fff!important; }
+
 /* Security Styles */
 
 .card-header{

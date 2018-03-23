@@ -56,7 +56,7 @@
         <!--More button row start -->
         <div id="more" class="row">
             <section id="more-buttons" class="col-12 announcement-col-pad d-none">
-                <button id="more-information" type="button" class="btn btn-mdb btn-lg btn-block" value="Announce-1#1">View More</button>
+                <button id="more-information" type="button" class="btn btn-primary-custom btn-lg btn-block" value="Announce-1#1">View More</button>
             </section>
         </div>
         <!--More button row end -->

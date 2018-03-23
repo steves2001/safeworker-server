@@ -30,8 +30,8 @@
                                     <label for="c_password">Confirm password</label>
                                 </div>
                                 <div class="text-center mb-4">
-                                    <button type="submit" class="btn btn-mdb btn-block z-depth-2">Register</button>
-                                    <button id="cancelButton" type="button" class="btn btn-danger btn-block z-depth-2">Cancel</button>
+                                    <button type="submit" class="btn btn-primary-custom btn-block z-depth-2">Register</button>
+                                    <button id="cancelButton" type="button" class="btn btn-secondary-custom btn-block z-depth-2">Cancel</button>
                                 </div>
                             </form>
                         </div>
