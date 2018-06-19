@@ -27,7 +27,6 @@
 
 @include('admin.navigation')
 
-
     <!-- Project start-->
     <div class="container-fluid">
         

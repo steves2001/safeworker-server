@@ -72,12 +72,15 @@
             <ul class="nav navbar-nav nav-flex-icons ml-auto">
                 <li id="timerButton" class="nav-item d-none">
                     <a class="nav-link" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <i class="fa fa-clock-o"></i>  <span id="loneWorkingText" class="clearfix d-none d-inline-block">Report Lone Working</span>
+                        <i class="fa fa-clock-o"></i>  <span id="loneWorkingText" class="clearfix d-inline-block">Report Lone Working</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none"><!-- Remove d-none to display the security button -->
                     <a id="Announce1" class="nav-link"><i id="securityIndicator" class="fa fa-user grey-text"></i> <span class="clearfix d-none d-sm-inline-block">Security</span></a>
                 </li>
+                <li class="nav-item">
+                    <a id="logoutIcon" class="nav-link invisible"><i id="securityIndicator" class="fa fa-power-off red-text"></i> <span class="clearfix d-none d-sm-inline-block">Logout</span></a>
+                </li>                
             </ul>
         </nav>
         <!-- /.Navbar -->

@@ -23,7 +23,8 @@
         studyEndTime: 0,
         studyTimer: 0,
         studyTimerRunning: false,
-        securityData: null
+        securityData: null,
+        disableMonitoring: true
     };
 
 // End global data
@@ -74,6 +75,7 @@ function ajaxEnquiry(e, enquiryFormName){
 // Study timer - updates onscreen timer or disables it if countdown completed
 
 function studyTimer() {
+    if (app.disableMonitoring) return;
     var currentTime = new Date();
     var remainingTime = app.studyEndTime - currentTime.getTime();
     if(remainingTime > 0) {
@@ -88,6 +90,7 @@ function studyTimer() {
 // Set up and enable the study timer to refresh every second
 
 function enableStudyTimer() {
+    if (app.disableMonitoring) return;
     studyTimer();
     app.studyTimer = setInterval(function() {
         studyTimer()
@@ -100,6 +103,7 @@ function enableStudyTimer() {
 // Update the study timer on screen
 
 function updateStudyTimer(timeString) {
+    if (app.disableMonitoring) return;
     $('#loneWorkingText').text("Cancel " + timeString);
 }
 // End update study timer
@@ -107,6 +111,7 @@ function updateStudyTimer(timeString) {
 // Disables the study timer
 
 function disableStudyTimer() {
+    if (app.disableMonitoring) return;
     clearInterval(app.studyTimer);
     app.studyTimerRunning = false;
     showLoneWorkingFormElements();
@@ -119,6 +124,7 @@ function disableStudyTimer() {
 // notification.
 
 function getSecurityStatus() {
+    if (app.disableMonitoring) return;
     if(loggedIN()) $.ajax({
         url: api + 'activity/status',
         headers: {
@@ -234,6 +240,7 @@ function displayMoreInformationButton(url = null) {
 // lone working form
 
 function enableLoneWorking() {
+    if (app.disableMonitoring) return;
     disableStudyTimer();
     enableStudyTimer();
     $('#navbarToggleExternalContent').collapse('hide');
@@ -243,6 +250,7 @@ function enableLoneWorking() {
 // ---------------------------------------------------------------------------
 // Show lone working form
 function showLoneWorkingFormElements(){
+    if (app.disableMonitoring) return;
     setDisplay('#cancelLoneWorking', 'off', 'd-block');
     setDisplay('#inputLoneWorking', 'on', 'd-block');
     $('#loneWorkingText').text('Report Lone Working');
@@ -252,6 +260,7 @@ function showLoneWorkingFormElements(){
 // ---------------------------------------------------------------------------
 // Hide lone working form
 function hideLoneWorkingFormElements(){
+    if (app.disableMonitoring) return;
     setDisplay('#cancelLoneWorking', 'on', 'd-block');
     setDisplay('#inputLoneWorking', 'off', 'd-block');    
 }
@@ -261,6 +270,7 @@ function hideLoneWorkingFormElements(){
 // lone working record (it may have expired or security cancelled)
 
 function checkLoneWorking() {
+    if (app.disableMonitoring) return;
     if(loggedIn()) $.ajax({
         url: api + 'activity/status',
         headers: {
@@ -306,35 +316,36 @@ function checkLoneWorking() {
 // Setup lone working form configures the events for each of the form elements
 
 function setupLoneWorkingForm() {
-$('#select-hours .dropdown-item').click(function(e) {
-    $('#select-hours button').prop('value', $(this).text());
-    $('#select-hours button').text($(this).text() + ' Hrs');
-});
-$('#select-minutes .dropdown-item').click(function(e) {
-    $('#select-minutes button').prop('value', $(this).text());
-    $('#select-minutes button').text($(this).text() + ' Mins');
-});
-$('#select-location .dropdown-item').click(function(e) {
-    $('#select-location button').prop('value', $(this).text());
-    $('#select-location button').text($(this).text());
-});
-$('#timerButton').click(function(e) {
-    $("html, body").animate({
-        scrollTop: 0
-    }, "slow");
-});
-$('#stopButton').click(function(e) {
-    ajaxCancelLoneWorking();
-});
-$('#startButton').click(function(e) {
-    
-    studyObject = validateLoneWorkingForm();
-    
-    if(studyObject != null) 
-        ajaxRegisterLoneWorking(studyObject);
-    
-    return;
-});
+    if (app.disableMonitoring) return;
+    $('#select-hours .dropdown-item').click(function(e) {
+        $('#select-hours button').prop('value', $(this).text());
+        $('#select-hours button').text($(this).text() + ' Hrs');
+    });
+    $('#select-minutes .dropdown-item').click(function(e) {
+        $('#select-minutes button').prop('value', $(this).text());
+        $('#select-minutes button').text($(this).text() + ' Mins');
+    });
+    $('#select-location .dropdown-item').click(function(e) {
+        $('#select-location button').prop('value', $(this).text());
+        $('#select-location button').text($(this).text());
+    });
+    $('#timerButton').click(function(e) {
+        $("html, body").animate({
+            scrollTop: 0
+        }, "slow");
+    });
+    $('#stopButton').click(function(e) {
+        ajaxCancelLoneWorking();
+    });
+    $('#startButton').click(function(e) {
+
+        studyObject = validateLoneWorkingForm();
+
+        if(studyObject != null) 
+            ajaxRegisterLoneWorking(studyObject);
+
+        return;
+    });
 }
 // End setup lone working form
 // ---------------------------------------------------------------------------
@@ -388,6 +399,7 @@ function validateLoneWorkingForm() {
 // Register lone working request on system
 
 function ajaxRegisterLoneWorking(studyObject) {
+    if (app.disableMonitoring) return;
     $.ajax({
         url: api + 'activity/log',
         headers: {
@@ -419,6 +431,7 @@ function ajaxRegisterLoneWorking(studyObject) {
 // Student cancel lone working request
 
 function ajaxCancelLoneWorking() {
+    if (app.disableMonitoring) return;
     $.ajax({
         url: api + 'activity/cancel',
         headers: {
@@ -458,7 +471,8 @@ function loginSuccess() {
     setDisplay('#changePasswordButton', 'on', 'd-block');
     setDisplay('#logoutButton', 'on', 'd-block');
     setDisplay('#navBurger', 'on', 'd-block');
-    setDisplay('#timerButton', 'on', 'd-block');
+    $('#logoutIcon').removeClass('invisible').addClass('visible');
+    if (!app.disableMonitoring) setDisplay('#timerButton', 'on', 'd-block');
     checkLoneWorking();
     retrieveAnnouncements('Announce-3');    
 }
@@ -473,7 +487,8 @@ function logout(e) {
     setDisplay('#changePasswordButton', 'off', 'd-block');
     setDisplay('#logoutButton', 'off', 'd-block');
     setDisplay('#navBurger', 'off', 'd-block');
-    setDisplay('#timerButton', 'off', 'd-block');
+    $('#logoutIcon').removeClass('visible').addClass('invisible');
+    if (!app.disableMonitoring) setDisplay('#timerButton', 'off', 'd-block');
     $('#announcements').empty();
     displayMoreInformationButton();
     disableStudyTimer();
@@ -518,7 +533,8 @@ function displayForm(sectionId = 'none'){
         setDisplay('#changePasswordButton', 'on', 'd-block');
         setDisplay('#logoutButton', 'on', 'd-block');
         setDisplay('#navBurger', 'on', 'd-block');
-        setDisplay('#timerButton', 'on', 'd-block');
+        $('#logoutIcon').removeClass('invisible').addClass('visible');
+        if (!app.disableMonitoring) setDisplay('#timerButton', 'off', 'd-block');
     } else {
         displayForm('loginSection');
         $('#lEmail').focus();
@@ -573,6 +589,9 @@ function displayForm(sectionId = 'none'){
     $('[id^=Announce-]').click(function(e) {
         retrieveAnnouncements(this.id);
     });
+    $("#logoutIcon").click(function(e) {
+        logout();
+    }); // End logoutButton.click    
     $('#more-information').click(function(e) {
         var value = $(this).prop("value")
         var id = value.substr(0, value.indexOf('#'));
