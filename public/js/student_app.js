@@ -42,7 +42,7 @@ function ajaxEnquiry(e, enquiryFormName){
     
     // Build data for ajax call
     enquiryFormData = {
-        contact: $('#dropdownDestination').attr('value').replace(/ +/g, "").toLowerCase(),
+        contact: $('#dropdownDestination').attr('value').replace(/ +/g, "_").toLowerCase(),
         enquiryMessage: $('#contactMessage').val()
     };
     

@@ -30,7 +30,18 @@ class contactController extends Controller
         $validator = Validator::make($request->all(), [
             'contact' => [ 
                 'required',
-                Rule::in(['general', 'financial', 'careers', 'studentunion', 'safeguarding']),
+                Rule::in(['general', 
+                          'welfare', 
+                          'mental_health', 
+                          'learning_support', 
+                          'youth_worker', 
+                          'counselling', 
+                          'careers', 
+                          "hate_crime", 
+                          "bullying", 
+                          "prevent", 
+                          'safeguarding'
+                         ]),
             ],
             'enquiryMessage' => 'required|string',
         ]);
@@ -48,19 +59,27 @@ class contactController extends Controller
         
         switch ($input['contact']) {
             case "safeguarding":
-                $contactEmail = 'studentservices@lincolncollege.ac.uk';
+            case "hatecrime":
+            case "bullying":
+            case "prevent":
+                $contactEmail = 'safeguarding@lincolncollege.ac.uk';
                 break;
+            case "counselling":
             case "general":
                 $contactEmail = 'studentservices@lincolncollege.ac.uk';
                 break;
-            case "financial":
+            case "welfare":
                 $contactEmail = 'welfare@lincolncollege.ac.uk';
+                break;
+            case "mental_health":
+            case "learning_support":
+                $contactEmail = 'assessmentofficer@lincolncollege.ac.uk';
                 break;
             case "careers":
                 $contactEmail = 'guidanceteam@lincolncollege.ac.uk';
                 break;
-            case "studentunion":
-                $contactEmail = 'studentpresident@lincolncollege.ac.uk';
+            case "youth":
+                $contactEmail = 'youthworker@lincolncollege.ac.uk';
                 break;
             default:
                 $contactEmail = 'ssmith@lincolncollege.ac.uk';
