@@ -70,7 +70,7 @@ function setupRegisterForm(){
 function setupLoginForm(){
     $("#loginForm").submit(function(e) {
         cancelDefaultBehaviour(e)
-        ajaxLogin(e, "#loginForm");
+        ajaxLoginStaff(e, "#loginForm");
     }); // End loginForm.submit
     $("#recoverButton").click(function(e) {
         forgotPassword($('#lEmail').val());

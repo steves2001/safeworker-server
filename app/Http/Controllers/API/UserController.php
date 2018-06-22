@@ -25,10 +25,21 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function login(){
+    public function login(Request $request){
      // Check login details
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){
             $user = Auth::user();
+            
+         // If the login is a staff login check it is a staff email  
+            if ($request->is('api/login/staff')) {
+                
+                $emailDetails = explode('@', $request->email, 3);
+             // Email must be AAAAAAAA@lincolncollege.ac.uk
+                if(count($emailDetails) >= 2)
+                    if(!(ctype_alpha ($emailDetails[0]) && $emailDetails[1] == 'lincolncollege.ac.uk'))  
+                        return response()->json(['error'=>'Email is not a valid staff lincolncollege email address'], 401);
+            }
+        
             $success['token'] =  $user->createToken('MyApp')->accessToken;
          // Correct password entered check the user has confirmed the registration or password change
             if($this->emailConfirmationCompleted($user)){

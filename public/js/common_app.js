@@ -4,7 +4,31 @@ var token = '';
 // ---------------------------------------------------------------------------
 // Login/Password Related code
 // ---------------------------------------------------------------------------
-// Login User
+// Login Staff
+
+function ajaxLoginStaff(e, loginFormName) {
+    var formData = $(loginFormName).serialize();
+    console.log(formData);
+    $.ajax({
+        url: api + 'login/staff',
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            console.log("Login Response Data");
+            console.log(data);
+            writeAPIToken(data.success.token);
+            loginSuccess();
+        }, // End of success
+        error: function(data) {
+            toastr["error"](data.responseJSON["error"]);
+            console.log("Login Failed Response Data");
+            console.log(data.responseText);
+        } // End error
+    });
+}
+// End Login Staff
+
+// // Login User
 
 function ajaxLogin(e, loginFormName) {
     var formData = $(loginFormName).serialize();
