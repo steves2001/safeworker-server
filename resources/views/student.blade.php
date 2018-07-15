@@ -4,10 +4,31 @@
 <head>
     <meta charset="utf-8">
     <meta name="theme-color" content="#212529">
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Study Safe">
+    <link rel="icon" sizes="192x192" href="images/icons/icon-192x192.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Study Safe">
+    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
+
+    <!-- Tile for Win8 -->
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <meta name="msapplication-TileImage" content="images/icons/icon-192x192.png">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+    
     <title>Study Safe - Student</title>
-    <link rel="manifest" href="manifest.json">
+@include('serviceworker')
+    <link rel="manifest" href="manifest.webmanifest">    
+    
+
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
     <!-- Bootstrap core CSS -->

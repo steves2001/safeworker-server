@@ -5,7 +5,7 @@
 // working alone in study areas and to provide safeguarding contacts to 
 // learners
 // ---------------------------------------------------------------------------
-// Code required to install the service worker
+/* Code required to install the service worker
 (function() {
     'use strict';
     if('serviceWorker' in navigator) {
@@ -14,7 +14,7 @@
         });
     }
 })();
-// End Service worker code
+*/ // End Service worker code
 // ---------------------------------------------------------------------------
 // Global Data
 // ---------------------------------------------------------------------------

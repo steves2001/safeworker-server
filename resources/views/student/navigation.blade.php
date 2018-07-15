@@ -6,7 +6,7 @@
                 <li>
                     <!-- SideNav slide-out button -->
                     <div>
-                        <a href="#"><i class="fa fa-bars" style="font-size:1.4rem"></i></a>
+                        <a href="#" aria-label="Toggle navigation"><i class="fa fa-bars" style="font-size:1.4rem"></i></a>
                     </div>
                 </li>
                 <!-- Side navigation links -->
@@ -65,7 +65,7 @@
         <nav class="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav">
             <!-- SideNav slide-out button -->
             <div class="float-left">
-                <a id="navBurger" href="#" data-activates="slide-out" class="button-collapse d-none"><i class="fa fa-bars" style="font-size:1.4rem"></i></a>
+                <a id="navBurger" href="#" data-activates="slide-out" class="button-collapse d-none" aria-label="Toggle navigation"><i class="fa fa-bars" style="font-size:1.4rem"></i></a>
             </div>
             <!-- Title -->
             <span id="debugLink" class="clearfix d-none d-sm-inline-block" style="margin-left: 7px;">Study Safe</span>
@@ -79,7 +79,7 @@
                     <a id="Announce1" class="nav-link"><i id="securityIndicator" class="fa fa-user grey-text"></i> <span class="clearfix d-none d-sm-inline-block">Security</span></a>
                 </li>
                 <li class="nav-item">
-                    <a id="logoutIcon" class="nav-link invisible"><i id="securityIndicator" class="fa fa-power-off red-text"></i> <span class="clearfix d-none d-sm-inline-block">Logout</span></a>
+                    <a id="logoutIcon" class="nav-link invisible"><i class="fa fa-power-off red-text"></i> <span class="clearfix d-none d-sm-inline-block">Logout</span></a>
                 </li>                
             </ul>
         </nav>
